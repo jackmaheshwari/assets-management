@@ -27,7 +27,7 @@ export function AssetTable({ columns, data, onEdit, onDelete }) {
                         </tr>
                     ) : (
                         data.map((item) => (
-                            <tr key={item.id} className="hover">
+                            <tr key={item._id || item.id} className="hover">
                                 {columns.map((col) => (
                                     <td key={col.key} className="text-sm">
                                         {col.render ? col.render(item[col.key], item) : item[col.key]}

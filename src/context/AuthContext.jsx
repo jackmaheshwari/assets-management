@@ -9,15 +9,26 @@ export const AuthProvider = ({ children }) => {
     });
     const [loading] = useState(false);
 
-    const login = (email, password) => {
-        // Mock authentication
-        if (email === "admin@example.com" && password === "password") {
-            const userData = { email, name: "Admin User", role: "admin" };
+    const login = async (email, password) => {
+        try {
+            const response = await fetch(`${import.meta.env.VITE_API_ORIGIN}/login`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ email, password }),
+            });
+
+            if (!response.ok) {
+                return false;
+            }
+
+            const userData = await response.json();
             setUser(userData);
             localStorage.setItem("user", JSON.stringify(userData));
             return true;
+        } catch (error) {
+            console.error("Login failed:", error);
+            return false;
         }
-        return false;
     };
 
     const logout = () => {

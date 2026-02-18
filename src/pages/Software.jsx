@@ -1,34 +1,32 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Plus } from "lucide-react";
 import { AssetTable } from "../components/AssetTable";
 import { AssetForm } from "../components/AssetForm";
-
-
-import { initialData as hardwareData } from "./Hardware";
-
-const initialData = [
-    { id: 1, name: "Adobe Creative Cloud", version: "5.11.0", publisher: "Adobe", packageName: "adobe-cc", installDate: "2023-01-01", status: "Active", installedMachine: hardwareData[0].name },
-    { id: 2, name: "Microsoft 365 Business", version: "16.0.1", publisher: "Microsoft", packageName: "o365-bus", installDate: "2023-01-01", status: "Active", installedMachine: hardwareData[1].name },
-    { id: 3, name: "JetBrains All Products", version: "2023.2", publisher: "JetBrains", packageName: "jetbrains-toolbox", installDate: "2023-05-15", status: "Active", installedMachine: hardwareData[3].name },
-    { id: 4, name: "Slack", version: "4.36.1", publisher: "Slack Technologies", packageName: "com.slack.slack", installDate: "2023-02-01", status: "Active", installedMachine: "All Machines" },
-    { id: 5, name: "JIRA Cloud", version: "N/A", publisher: "Atlassian", packageName: "web-app", installDate: "2023-03-01", status: "Active", installedMachine: hardwareData[0].name },
-];
+import { api, endpoints } from "../services/api";
 
 export default function Software() {
-    const [assets, setAssets] = useState(initialData);
+    const [assets, setAssets] = useState([]);
+    const [loading, setLoading] = useState(true);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [editingAsset, setEditingAsset] = useState(null);
 
+    const fetchAssets = async () => {
+        try {
+            setLoading(true);
+            const data = await api.get(endpoints.software);
+            setAssets(data);
+        } catch (error) {
+            console.error("Failed to fetch assets:", error);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    useEffect(() => {
+        fetchAssets();
+    }, []);
+
     const columns = [
-        {
-            key: "id",
-            label: "Asset ID",
-            render: (_, item) => (
-                <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-info/10 text-info border border-info/20">
-                    AST-{item.id}
-                </span>
-            )
-        },
         {
             key: "name",
             label: "Display Name",
@@ -43,13 +41,20 @@ export default function Software() {
         { key: "installedMachine", label: "Installed On" },
     ];
 
-    const handleAddAsset = (newAsset) => {
-        if (editingAsset) {
-            setAssets(assets.map(a => a.id === editingAsset.id ? { ...newAsset, id: a.id } : a));
-        } else {
-            setAssets([...assets, { ...newAsset, id: Date.now() }]);
+    const handleAddAsset = async (formData) => {
+        try {
+            if (editingAsset) {
+                await api.put(endpoints.software, editingAsset._id, formData);
+            } else {
+                await api.post(endpoints.software, formData);
+            }
+            fetchAssets();
+            setIsModalOpen(false);
+            setEditingAsset(null);
+        } catch (error) {
+            console.error("Failed to save asset:", error);
+            alert("Failed to save asset. Please try again.");
         }
-        setEditingAsset(null);
     };
 
     const handleEdit = (asset) => {
@@ -57,9 +62,15 @@ export default function Software() {
         setIsModalOpen(true);
     };
 
-    const handleDelete = (asset) => {
+    const handleDelete = async (asset) => {
         if (confirm("Are you sure you want to delete this software license?")) {
-            setAssets(assets.filter(a => a.id !== asset.id));
+            try {
+                await api.delete(endpoints.software, asset._id);
+                fetchAssets();
+            } catch (error) {
+                console.error("Failed to delete asset:", error);
+                alert("Failed to delete asset.");
+            }
         }
     };
 
@@ -79,15 +90,19 @@ export default function Software() {
                 </button>
             </div>
 
-            <AssetTable
-                columns={columns}
-                data={assets}
-                onEdit={handleEdit}
-                onDelete={handleDelete}
-            />
+            {loading ? (
+                <div className="text-center py-10">Loading assets...</div>
+            ) : (
+                <AssetTable
+                    columns={columns}
+                    data={assets}
+                    onEdit={handleEdit}
+                    onDelete={handleDelete}
+                />
+            )}
 
             <AssetForm
-                key={editingAsset ? editingAsset.id : 'new'}
+                key={editingAsset ? editingAsset._id : 'new'}
                 isOpen={isModalOpen}
                 onClose={() => setIsModalOpen(false)}
                 onSubmit={handleAddAsset}

@@ -12,7 +12,7 @@ export default {
     plugins: [
         daisyui,
     ],
-    // daisyui: {
-    //     themes: ["corporate", "business"],
-    // },
+    daisyui: {
+        themes: ["dark", "light", "corporate"],
+    },
 }

@@ -1,3 +1,4 @@
+import { useState, useEffect } from "react";
 import { LayoutDashboard, Monitor, Package, Server } from "lucide-react";
 import { StatCard } from "../components/StatCard";
 import {
@@ -13,12 +14,7 @@ import {
     Cell,
     Legend
 } from 'recharts';
-
-const data = [
-    { name: 'Hardware', value: 567 },
-    { name: 'Software', value: 432 },
-    { name: 'Non-IT', value: 235 },
-];
+import { api } from "../services/api";
 
 const COLORS = ['#3B82F6', '#10B981', '#F59E0B'];
 
@@ -31,6 +27,43 @@ const activityData = [
 ];
 
 export default function Dashboard() {
+    const [stats, setStats] = useState({
+        hardware: 0,
+        software: 0,
+        nonIT: 0,
+        employees: 0,
+        total: 0
+    });
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        const fetchStats = async () => {
+            try {
+                // Ensure backend has this endpoint or fetch all individually
+                // Since I just added /api/stats to backend, this should work.
+                // If not, I'd fetch individually.
+                const data = await api.get('stats');
+                setStats(data);
+            } catch (error) {
+                console.error("Failed to fetch stats:", error);
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchStats();
+    }, []);
+
+    const pieData = [
+        { name: 'Hardware', value: stats.hardware },
+        { name: 'Software', value: stats.software },
+        { name: 'Non-IT', value: stats.nonIT },
+    ];
+
+    if (loading) {
+        return <div className="text-center py-10">Loading dashboard...</div>;
+    }
+
     return (
         <div className="space-y-8">
 
@@ -38,7 +71,7 @@ export default function Dashboard() {
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                 <StatCard
                     title="Total Assets"
-                    value="1,234"
+                    value={stats.total}
                     icon={LayoutDashboard}
                     trend="up"
                     trendValue="12"
@@ -46,7 +79,7 @@ export default function Dashboard() {
                 />
                 <StatCard
                     title="Hardware"
-                    value="567"
+                    value={stats.hardware}
                     icon={Server}
                     trend="up"
                     trendValue="5"
@@ -54,7 +87,7 @@ export default function Dashboard() {
                 />
                 <StatCard
                     title="Software"
-                    value="432"
+                    value={stats.software}
                     icon={Package}
                     trend="up"
                     trendValue="8"
@@ -62,7 +95,7 @@ export default function Dashboard() {
                 />
                 <StatCard
                     title="Non-IT"
-                    value="235"
+                    value={stats.nonIT}
                     icon={Monitor}
                     trend="down"
                     trendValue="2"
@@ -80,7 +113,7 @@ export default function Dashboard() {
                             <ResponsiveContainer width="100%" height="100%">
                                 <PieChart>
                                     <Pie
-                                        data={data}
+                                        data={pieData}
                                         cx="50%"
                                         cy="50%"
                                         innerRadius="60%"
@@ -88,7 +121,7 @@ export default function Dashboard() {
                                         paddingAngle={5}
                                         dataKey="value"
                                     >
-                                        {data.map((entry, index) => (
+                                        {pieData.map((entry, index) => (
                                             <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
                                         ))}
                                     </Pie>

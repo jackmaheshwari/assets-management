@@ -4,7 +4,10 @@ import { useEffect, useState } from "react";
 import { Search } from "lucide-react";
 
 export function Layout() {
-    const [theme, setTheme] = useState(localStorage.getItem("theme") || "corporate");
+    const [theme, setTheme] = useState(() => {
+        const stored = localStorage.getItem("theme");
+        return (stored === "dark" || stored === "light") ? stored : "dark";
+    });
 
     useEffect(() => {
         document.documentElement.setAttribute("data-theme", theme);
@@ -12,7 +15,7 @@ export function Layout() {
     }, [theme]);
 
     const toggleTheme = (e) => {
-        setTheme(e.target.checked ? "business" : "corporate");
+        setTheme(e.target.checked ? "dark" : "light");
     };
 
     return (
@@ -43,7 +46,7 @@ export function Layout() {
                         <label className="swap swap-rotate btn btn-ghost btn-circle btn-sm">
                             <input
                                 type="checkbox"
-                                checked={theme === "business"}
+                                checked={theme === "dark"}
                                 onChange={toggleTheme}
                             />
                             {/* sun icon */}

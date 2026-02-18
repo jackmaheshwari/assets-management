@@ -1,18 +1,30 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Plus, Users } from "lucide-react";
 import { AssetTable } from "../components/AssetTable";
-
-
-const initialData = [
-    { id: 1, name: "John Doe", username: "jdoe", email: "john.doe@example.com", workload: "High", status: "Active" },
-    { id: 2, name: "Jane Smith", username: "jsmith", email: "jane.smith@example.com", workload: "Medium", status: "Active" },
-    { id: 3, name: "Robert Wilson", username: "rwilson", email: "robert.wilson@example.com", workload: "Low", status: "Active" },
-    { id: 4, name: "Sarah Connor", username: "sconnor", email: "sarah.connor@example.com", workload: "High", status: "Active" },
-    { id: 5, name: "Michael Scott", username: "mscott", email: "michael.scott@example.com", workload: "Medium", status: "Active" },
-];
+import { EmployeeForm } from "../components/EmployeeForm";
+import { api, endpoints } from "../services/api";
 
 export default function Team() {
-    const [employees, setEmployees] = useState(initialData);
+    const [employees, setEmployees] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [editingEmployee, setEditingEmployee] = useState(null);
+
+    const fetchEmployees = async () => {
+        try {
+            setLoading(true);
+            const data = await api.get(endpoints.employees);
+            setEmployees(data);
+        } catch (error) {
+            console.error("Failed to fetch employees:", error);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    useEffect(() => {
+        fetchEmployees();
+    }, []);
 
     const workloadStyles = {
         High: "bg-error",
@@ -22,16 +34,13 @@ export default function Team() {
 
     const columns = [
         {
-            key: "id",
-            label: "EMP ID",
-            render: (_, item) => (
-                <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-info/10 text-info border border-info/20">
-                    EMP-{item.id}
-                </span>
+            key: "username",
+            label: "Username",
+            render: (username) => (
+                <span className="font-mono text-xs">{username}</span>
             )
         },
         { key: "name", label: "Name" },
-        { key: "username", label: "Username" },
         { key: "email", label: "Email" },
         {
             key: "workload",
@@ -43,15 +52,39 @@ export default function Team() {
                 </div>
             )
         },
+        { key: "status", label: "Status" }
     ];
 
-    const handleEdit = (employee) => {
-        alert(`Edit feature for ${employee.name} is coming soon!`);
+    const handleAddEmployee = async (formData) => {
+        try {
+            if (editingEmployee) {
+                await api.put(endpoints.employees, editingEmployee._id, formData);
+            } else {
+                await api.post(endpoints.employees, formData);
+            }
+            fetchEmployees();
+            setIsModalOpen(false);
+            setEditingEmployee(null);
+        } catch (error) {
+            console.error("Failed to save employee:", error);
+            alert("Failed to save employee. Please try again.");
+        }
     };
 
-    const handleDelete = (employee) => {
+    const handleEdit = (employee) => {
+        setEditingEmployee(employee);
+        setIsModalOpen(true);
+    };
+
+    const handleDelete = async (employee) => {
         if (confirm(`Are you sure you want to remove ${employee.name} from the team?`)) {
-            setEmployees(employees.filter(e => e.id !== employee.id));
+            try {
+                await api.delete(endpoints.employees, employee._id);
+                fetchEmployees();
+            } catch (error) {
+                console.error("Failed to delete employee:", error);
+                alert("Failed to delete employee.");
+            }
         }
     };
 
@@ -64,18 +97,31 @@ export default function Team() {
                 </div>
                 <button
                     className="flex items-center justify-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors shadow-sm font-medium"
-                    onClick={() => alert("Add employee feature is coming soon!")}
+                    onClick={() => { setEditingEmployee(null); setIsModalOpen(true); }}
                 >
                     <Plus className="w-5 h-5" />
                     Add Member
                 </button>
             </div>
 
-            <AssetTable
-                columns={columns}
-                data={employees}
-                onEdit={handleEdit}
-                onDelete={handleDelete}
+            {loading ? (
+                <div className="text-center py-10">Loading team...</div>
+            ) : (
+                <AssetTable
+                    columns={columns}
+                    data={employees}
+                    onEdit={handleEdit}
+                    onDelete={handleDelete}
+                />
+            )}
+
+            <EmployeeForm
+                key={editingEmployee ? editingEmployee._id : 'new'}
+                isOpen={isModalOpen}
+                onClose={() => setIsModalOpen(false)}
+                onSubmit={handleAddEmployee}
+                initialData={editingEmployee}
+                title={editingEmployee ? "Edit Member" : "Add Member"}
             />
         </div>
     );

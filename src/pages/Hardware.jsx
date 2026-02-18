@@ -1,29 +1,39 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Plus } from "lucide-react";
 import { AssetTable } from "../components/AssetTable";
 import { AssetForm } from "../components/AssetForm";
-import { StatusBadge, StatusDot } from "../components/StatusBadge";
-
-export const initialData = [
-    { id: 1, name: "MacBook Pro 16", status: "Active", assignee: "John Doe", purchaseDate: "2023-01-15", manufacturer: "Apple", modelName: "MacBook Pro", modelNumber: "A2780", serialNumber: "C02XYZ123", macAddress: "00:1A:2B:3C:4D:5E", ipAddress: "192.168.1.101" },
-    { id: 2, name: "Dell XPS 15", status: "Available", assignee: "-", purchaseDate: "2023-03-10", manufacturer: "Dell", modelName: "XPS 15", modelNumber: "9520", serialNumber: "DL123456", macAddress: "00:11:22:33:44:55", ipAddress: "192.168.1.102" },
-    { id: 3, name: "HP LaserJet Pro", status: "In Repair", assignee: "Office 3F", purchaseDate: "2022-11-05", manufacturer: "HP", modelName: "LaserJet Pro", modelNumber: "M404dn", serialNumber: "HP987654321", macAddress: "AA:BB:CC:DD:EE:FF", ipAddress: "192.168.1.50" },
-    { id: 4, name: "Lenovo ThinkPad X1", status: "Active", assignee: "Jane Smith", purchaseDate: "2023-06-20", manufacturer: "Lenovo", modelName: "ThinkPad X1 Carbon", modelNumber: "Gen 10", serialNumber: "LV555555", macAddress: "11:22:33:44:55:66", ipAddress: "192.168.1.103" },
-    { id: 5, name: "iPad Pro 12.9", status: "Active", assignee: "Design Team", purchaseDate: "2023-09-01", manufacturer: "Apple", modelName: "iPad Pro", modelNumber: "A2436", serialNumber: "DMPQ1234", macAddress: "A1:B2:C3:D4:E5:F6", ipAddress: "192.168.1.104" },
-];
+import { StatusDot } from "../components/StatusBadge";
+import { api, endpoints } from "../services/api";
 
 export default function Hardware() {
-    const [assets, setAssets] = useState(initialData);
+    const [assets, setAssets] = useState([]);
+    const [loading, setLoading] = useState(true);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [editingAsset, setEditingAsset] = useState(null);
 
+    const fetchAssets = async () => {
+        try {
+            setLoading(true);
+            const data = await api.get(endpoints.hardware);
+            setAssets(data);
+        } catch (error) {
+            console.error("Failed to fetch assets:", error);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    useEffect(() => {
+        fetchAssets();
+    }, []);
+
     const columns = [
         {
-            key: "id",
+            key: "assetId",
             label: "Asset ID",
-            render: (_, item) => (
+            render: (assetId) => (
                 <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-info/10 text-info border border-info/20">
-                    AST-{item.id}
+                    {assetId}
                 </span>
             )
         },
@@ -44,13 +54,22 @@ export default function Hardware() {
         { key: "assignee", label: "Assignee" },
     ];
 
-    const handleAddAsset = (newAsset) => {
-        if (editingAsset) {
-            setAssets(assets.map(a => a.id === editingAsset.id ? { ...newAsset, id: a.id } : a));
-        } else {
-            setAssets([...assets, { ...newAsset, id: Date.now() }]);
+    const handleAddAsset = async (formData) => {
+        try {
+            if (editingAsset) {
+                await api.put(endpoints.hardware, editingAsset._id, formData);
+            } else {
+                // Generate a simple asset ID if not provided (backend could do this too)
+                const newAsset = { ...formData, assetId: `AST-${Date.now()}` };
+                await api.post(endpoints.hardware, newAsset);
+            }
+            fetchAssets();
+            setIsModalOpen(false);
+            setEditingAsset(null);
+        } catch (error) {
+            console.error("Failed to save asset:", error);
+            alert("Failed to save asset. Please try again.");
         }
-        setEditingAsset(null);
     };
 
     const handleEdit = (asset) => {
@@ -58,9 +77,15 @@ export default function Hardware() {
         setIsModalOpen(true);
     };
 
-    const handleDelete = (asset) => {
+    const handleDelete = async (asset) => {
         if (confirm("Are you sure you want to delete this asset?")) {
-            setAssets(assets.filter(a => a.id !== asset.id));
+            try {
+                await api.delete(endpoints.hardware, asset._id);
+                fetchAssets();
+            } catch (error) {
+                console.error("Failed to delete asset:", error);
+                alert("Failed to delete asset.");
+            }
         }
     };
 
@@ -80,15 +105,19 @@ export default function Hardware() {
                 </button>
             </div>
 
-            <AssetTable
-                columns={columns}
-                data={assets}
-                onEdit={handleEdit}
-                onDelete={handleDelete}
-            />
+            {loading ? (
+                <div className="text-center py-10">Loading assets...</div>
+            ) : (
+                <AssetTable
+                    columns={columns}
+                    data={assets}
+                    onEdit={handleEdit}
+                    onDelete={handleDelete}
+                />
+            )}
 
             <AssetForm
-                key={editingAsset ? editingAsset.id : 'new'}
+                key={editingAsset ? editingAsset._id : 'new'}
                 isOpen={isModalOpen}
                 onClose={() => setIsModalOpen(false)}
                 onSubmit={handleAddAsset}

@@ -1,12 +1,14 @@
 import { useState } from "react";
 import { useAuth } from "../context/useAuth";
 import { useNavigate, useLocation } from "react-router-dom";
-import { KeyRound, Mail, ArrowRight } from "lucide-react";
+import { Mail, Lock, Eye, EyeOff, LogIn } from "lucide-react";
+import { Logo } from "../components/Logo";
 
 export default function Login() {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [error, setError] = useState("");
+    const [showPassword, setShowPassword] = useState(false);
     const { login } = useAuth();
     const navigate = useNavigate();
     const location = useLocation();
@@ -17,101 +19,101 @@ export default function Login() {
         e.preventDefault();
         setError("");
 
-        // Mock async login for effect
-        setTimeout(() => {
-            if (login(email, password)) {
-                navigate(from, { replace: true });
-            } else {
-                setError("Invalid credentials. Try admin@example.com / password");
-            }
-        }, 500);
+        const success = await login(email, password);
+        if (success) {
+            navigate(from, { replace: true });
+        } else {
+            setError("Invalid credentials. Please try again.");
+        }
     };
 
     return (
-        <div className="min-h-screen bg-base-200 flex items-center justify-center p-4">
-            <div className="card lg:card-side bg-base-100 shadow-2xl max-w-4xl w-full overflow-hidden border border-base-200">
-                <div className="card-body w-full lg:w-1/2 p-8 lg:p-12">
-                    <div className="flex flex-col h-full justify-center">
-                        <div className="mb-8">
-                            <div className="w-12 h-12 rounded-xl bg-primary flex items-center justify-center mb-4 text-primary-content">
-                                <KeyRound className="w-6 h-6" />
-                            </div>
-                            <h2 className="text-3xl font-bold">Welcome back</h2>
-                            <p className="text-base-content/60 mt-2">Please enter your details to sign in.</p>
-                        </div>
-
-                        {error && (
-                            <div role="alert" className="alert alert-error mb-6">
-                                <svg xmlns="http://www.w3.org/2000/svg" className="stroke-current shrink-0 h-6 w-6" fill="none" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
-                                <span>{error}</span>
-                            </div>
-                        )}
-
-                        <form onSubmit={handleSubmit} className="space-y-4">
-                            <div className="form-control">
-                                <label className="label">
-                                    <span className="label-text">Email</span>
-                                </label>
-                                <label className="input input-bordered flex items-center gap-2">
-                                    <Mail className="w-4 h-4 opacity-70" />
-                                    <input
-                                        type="email"
-                                        className="grow"
-                                        placeholder="admin@example.com"
-                                        value={email}
-                                        onChange={(e) => setEmail(e.target.value)}
-                                        required
-                                    />
-                                </label>
-                            </div>
-
-                            <div className="form-control">
-                                <label className="label">
-                                    <span className="label-text">Password</span>
-                                </label>
-                                <label className="input input-bordered flex items-center gap-2">
-                                    <KeyRound className="w-4 h-4 opacity-70" />
-                                    <input
-                                        type="password"
-                                        className="grow"
-                                        placeholder="••••••••"
-                                        value={password}
-                                        onChange={(e) => setPassword(e.target.value)}
-                                        required
-                                    />
-                                </label>
-                                <label className="label">
-                                    <a href="#" className="label-text-alt link link-hover">Forgot password?</a>
-                                </label>
-                            </div>
-
-                            <div className="form-control mt-6">
-                                <button type="submit" className="btn btn-primary">
-                                    Sign in <ArrowRight className="w-4 h-4 ml-2" />
-                                </button>
-                            </div>
-                        </form>
-
-                        <div className="mt-6 text-center text-sm text-base-content/60">
-                            Don't have an account? <a href="#" className="link link-primary">Contact Admin</a>
-                        </div>
-                    </div>
+        <div className="min-h-screen relative flex items-center justify-center p-4 overflow-hidden bg-cover bg-center font-sans"
+            style={{
+                backgroundImage: `url('https://images.unsplash.com/photo-1629814684497-76b3843815c3?q=80&w=2574&auto=format&fit=crop')` // Cloud/Sky background
+            }}
+        >
+            {/* Logo Top Left */}
+            <div className="absolute top-8 left-8 flex items-center gap-3 text-slate-800 z-20">
+                <div className="w-10 h-10 bg-black text-white rounded-xl flex items-center justify-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path><circle cx="12" cy="12" r="4"></circle></svg>
                 </div>
-                <div className="w-full lg:w-1/2 bg-primary relative hidden lg:flex flex-col items-center justify-center p-12 text-primary-content">
-                    <div className="absolute inset-0 bg-linear-to-br from-primary to-secondary opacity-90"></div>
-                    <div className="relative z-10 text-center space-y-6">
-                        <h1 className="text-4xl font-bold">Asset Manager</h1>
-                        <p className="text-lg opacity-90">Streamline your hardware and software tracking with our modern solution.</p>
-                        <div className="mockup-window border bg-base-300 w-full max-w-sm mx-auto shadow-2xl">
-                            <div className="flex justify-center px-4 py-16 bg-base-200 text-base-content font-mono text-sm leading-6">
-                                &gt; System.init()<br />
-                                &gt; Loading modules...<br />
-                                &gt; Ready.
-                            </div>
-                        </div>
-                    </div>
-                </div>
+                <span className="text-xl font-bold tracking-tight">AssetManager</span>
             </div>
+
+            {/* Glass Card */}
+            <div className="relative w-full max-w-[480px] bg-white/40 backdrop-blur-2xl border border-white/50 rounded-[3rem] shadow-2xl p-8 md:p-12 z-10 transition-all duration-300">
+
+                <div className="flex flex-col items-center text-center mb-8">
+                    <div className="w-16 h-16 bg-white/80 rounded-2xl flex items-center justify-center mb-6 shadow-sm ring-1 ring-white/50">
+                        <LogIn className="w-7 h-7 text-slate-900" />
+                    </div>
+                    <h1 className="text-3xl font-extrabold text-slate-900 tracking-tight">Sign in</h1>
+                    <p className="text-slate-600 mt-3 text-sm max-w-xs leading-relaxed">
+                        Enter your credentials to log in
+                    </p>
+                </div>
+
+                {error && (
+                    <div className="mb-6 p-4 rounded-xl bg-red-50/80 border border-red-100 text-red-600 text-sm font-medium flex items-center gap-2">
+                        <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clipRule="evenodd" /></svg>
+                        {error}
+                    </div>
+                )}
+
+                <form onSubmit={handleSubmit} className="space-y-5">
+                    <div className="group">
+                        <div className="relative">
+                            <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                                <Mail className="h-5 w-5 text-slate-500 group-focus-within:text-slate-800 transition-colors" />
+                            </div>
+                            <input
+                                type="email"
+                                className="w-full pl-11 pr-4 py-4 bg-slate-50/50 border-0 text-slate-900 placeholder-slate-500 rounded-2xl focus:ring-2 focus:ring-slate-900/10 focus:bg-white transition-all outline-none font-medium"
+                                placeholder="Email"
+                                value={email}
+                                onChange={(e) => setEmail(e.target.value)}
+                                required
+                            />
+                        </div>
+                    </div>
+
+                    <div className="group">
+                        <div className="relative">
+                            <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                                <Lock className="h-5 w-5 text-slate-500 group-focus-within:text-slate-800 transition-colors" />
+                            </div>
+                            <input
+                                type={showPassword ? "text" : "password"}
+                                className="w-full pl-11 pr-11 py-4 bg-slate-50/50 border-0 text-slate-900 placeholder-slate-500 rounded-2xl focus:ring-2 focus:ring-slate-900/10 focus:bg-white transition-all outline-none font-medium"
+                                placeholder="Password"
+                                value={password}
+                                onChange={(e) => setPassword(e.target.value)}
+                                required
+                            />
+                            <button
+                                type="button"
+                                className="absolute inset-y-0 right-0 pr-4 flex items-center text-slate-500 hover:text-slate-700 transition-colors"
+                                onClick={() => setShowPassword(!showPassword)}
+                            >
+                                {showPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
+                            </button>
+                        </div>
+                    </div>
+
+                    <div className="flex justify-end">
+                        <a href="#" className="text-sm font-semibold text-slate-600 hover:text-slate-900 transition-colors">
+                            Forgot password?
+                        </a>
+                    </div>
+
+                    <button
+                        type="submit"
+                        className="w-full bg-slate-900 hover:bg-black text-white font-bold py-4 rounded-2xl transition-all shadow-lg shadow-slate-900/20 active:scale-[0.98]"
+                    >
+                        Login
+                    </button>
+                </form>            </div>
         </div>
     );
 }

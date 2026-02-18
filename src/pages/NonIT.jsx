@@ -1,36 +1,45 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Plus } from "lucide-react";
 import { AssetTable } from "../components/AssetTable";
 import { AssetForm } from "../components/AssetForm";
-import { StatusBadge, StatusDot } from "../components/StatusBadge";
-
-const initialData = [
-    { id: 1, name: "Ergonomic Chair", status: "Active", assignee: "John Doe", purchaseDate: "2022-08-15" },
-    { id: 2, name: "Standing Desk", status: "Active", assignee: "Jane Smith", purchaseDate: "2023-01-20" },
-    { id: 3, name: "Meeting Room Table", status: "Active", assignee: "Conference A", purchaseDate: "2021-06-10" },
-    { id: 4, name: "Whiteboard", status: "Active", assignee: "Meeting Room B", purchaseDate: "2021-07-01" },
-    { id: 5, name: "Office Sofa", status: "Retired", assignee: "Lobby", purchaseDate: "2020-03-15" },
-];
+import { api, endpoints } from "../services/api";
 
 export default function NonIT() {
-    const [assets, setAssets] = useState(initialData);
+    const [assets, setAssets] = useState([]);
+    const [loading, setLoading] = useState(true);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [editingAsset, setEditingAsset] = useState(null);
 
+    const fetchAssets = async () => {
+        try {
+            setLoading(true);
+            const data = await api.get(endpoints.nonIT);
+            setAssets(data);
+        } catch (error) {
+            console.error("Failed to fetch assets:", error);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    useEffect(() => {
+        fetchAssets();
+    }, []);
+
     const columns = [
         {
-            key: "id",
+            key: "assetId",
             label: "Asset ID",
-            render: (_, item) => (
+            render: (assetId) => (
                 <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-info/10 text-info border border-info/20">
-                    AST-{item.id}
+                    {assetId}
                 </span>
             )
         },
         {
             key: "name",
             label: "Item Name",
-            render: (name, item) => (
+            render: (name) => (
                 <div className="flex items-center gap-3">
                     <span className="font-medium text-base-content">{name}</span>
                 </div>
@@ -40,13 +49,22 @@ export default function NonIT() {
         { key: "purchaseDate", label: "Purchase Date" },
     ];
 
-    const handleAddAsset = (newAsset) => {
-        if (editingAsset) {
-            setAssets(assets.map(a => a.id === editingAsset.id ? { ...newAsset, id: a.id } : a));
-        } else {
-            setAssets([...assets, { ...newAsset, id: Date.now() }]);
+    const handleAddAsset = async (formData) => {
+        try {
+            if (editingAsset) {
+                await api.put(endpoints.nonIT, editingAsset._id, formData);
+            } else {
+                // Generate a simple asset ID if not provided
+                const newAsset = { ...formData, assetId: `AST-N${Date.now()}` };
+                await api.post(endpoints.nonIT, newAsset);
+            }
+            fetchAssets();
+            setIsModalOpen(false);
+            setEditingAsset(null);
+        } catch (error) {
+            console.error("Failed to save asset:", error);
+            alert("Failed to save asset. Please try again.");
         }
-        setEditingAsset(null);
     };
 
     const handleEdit = (asset) => {
@@ -54,9 +72,15 @@ export default function NonIT() {
         setIsModalOpen(true);
     };
 
-    const handleDelete = (asset) => {
+    const handleDelete = async (asset) => {
         if (confirm("Are you sure you want to delete this item?")) {
-            setAssets(assets.filter(a => a.id !== asset.id));
+            try {
+                await api.delete(endpoints.nonIT, asset._id);
+                fetchAssets();
+            } catch (error) {
+                console.error("Failed to delete asset:", error);
+                alert("Failed to delete asset.");
+            }
         }
     };
 
@@ -76,15 +100,19 @@ export default function NonIT() {
                 </button>
             </div>
 
-            <AssetTable
-                columns={columns}
-                data={assets}
-                onEdit={handleEdit}
-                onDelete={handleDelete}
-            />
+            {loading ? (
+                <div className="text-center py-10">Loading assets...</div>
+            ) : (
+                <AssetTable
+                    columns={columns}
+                    data={assets}
+                    onEdit={handleEdit}
+                    onDelete={handleDelete}
+                />
+            )}
 
             <AssetForm
-                key={editingAsset ? editingAsset.id : 'new'}
+                key={editingAsset ? editingAsset._id : 'new'}
                 isOpen={isModalOpen}
                 onClose={() => setIsModalOpen(false)}
                 onSubmit={handleAddAsset}
