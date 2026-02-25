@@ -6,6 +6,7 @@ import { Employee } from './models/Employee.js';
 import { Hardware } from './models/Hardware.js';
 import { Software } from './models/Software.js';
 import { NonITAsset } from './models/NonITAsset.js';
+import { Ticket } from './models/Ticket.js';
 
 dotenv.config();
 
@@ -21,11 +22,12 @@ app.use(express.json());
 // Stats Route
 app.get('/api/stats', async (req, res) => {
     try {
-        const [hardware, software, nonIT, employees] = await Promise.all([
+        const [hardware, software, nonIT, employees, tickets] = await Promise.all([
             Hardware.countDocuments(),
             Software.countDocuments(),
             NonITAsset.countDocuments(),
-            Employee.countDocuments()
+            Employee.countDocuments(),
+            Ticket.countDocuments()
         ]);
 
         res.json({
@@ -33,6 +35,7 @@ app.get('/api/stats', async (req, res) => {
             software,
             nonIT,
             employees,
+            tickets,
             total: hardware + software + nonIT
         });
     } catch (error) {
@@ -123,6 +126,10 @@ app.use('/api/software', softwareRouter);
 const nonITRouter = express.Router();
 createCrudRoutes(nonITRouter, NonITAsset);
 app.use('/api/non-it-assets', nonITRouter);
+
+const ticketRouter = express.Router();
+createCrudRoutes(ticketRouter, Ticket);
+app.use('/api/tickets', ticketRouter);
 
 mongoose.connect(MONGODB_URI)
     .then(() => {

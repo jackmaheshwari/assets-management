@@ -1,5 +1,5 @@
 import { Link, useLocation } from "react-router-dom";
-import { LayoutDashboard, Briefcase, Package, Monitor, Settings, LogOut, Users, FileText } from "lucide-react";
+import { LayoutDashboard, Briefcase, Package, Monitor, LogOut, Users, FileText, Ticket } from "lucide-react";
 import clsx from "clsx";
 import { useAuth } from "../context/useAuth";
 import { Logo } from "../components/Logo";
@@ -9,6 +9,7 @@ const navigation = [
     { name: "Hardware Assets", href: "/hardware", icon: Monitor },
     { name: "Software Assets", href: "/software", icon: Package },
     { name: "Non-IT Assets", href: "/non-it", icon: Briefcase },
+    { name: "Tickets", href: "/tickets", icon: Ticket },
     { name: "Team", href: "/team", icon: Users },
     { name: "Reports", href: "/reports", icon: FileText },
 ];

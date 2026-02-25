@@ -1,7 +1,8 @@
-import { useState, useEffect } from "react";
-import { Plus } from "lucide-react";
+import { useState, useEffect, useMemo } from "react";
+import { Plus, Search } from "lucide-react";
 import { AssetTable } from "../components/AssetTable";
 import { AssetForm } from "../components/AssetForm";
+import { AssetDetailsModal } from "../components/AssetDetailsModal";
 import { api, endpoints } from "../services/api";
 
 export default function Software() {
@@ -9,6 +10,9 @@ export default function Software() {
     const [loading, setLoading] = useState(true);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [editingAsset, setEditingAsset] = useState(null);
+    const [searchQuery, setSearchQuery] = useState("");
+    const [viewingAsset, setViewingAsset] = useState(null);
+    const [isDetailOpen, setIsDetailOpen] = useState(false);
 
     const fetchAssets = async () => {
         try {
@@ -25,6 +29,15 @@ export default function Software() {
     useEffect(() => {
         fetchAssets();
     }, []);
+
+    const filteredAssets = useMemo(() => {
+        return assets.filter(asset => 
+            asset.name?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+            asset.publisher?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+            asset.packageName?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+            asset.installedMachine?.toLowerCase().includes(searchQuery.toLowerCase())
+        );
+    }, [assets, searchQuery]);
 
     const columns = [
         {
@@ -62,6 +75,11 @@ export default function Software() {
         setIsModalOpen(true);
     };
 
+    const handleView = (asset) => {
+        setViewingAsset(asset);
+        setIsDetailOpen(true);
+    };
+
     const handleDelete = async (asset) => {
         if (confirm("Are you sure you want to delete this software license?")) {
             try {
@@ -77,9 +95,15 @@ export default function Software() {
     return (
         <div className="space-y-6">
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-                <div>
-                    <h1 className="text-3xl font-bold text-base-content tracking-tight">Software Assets</h1>
-                    <p className="text-base-content/70 mt-1">Manage software licenses, subscriptions, and specialized tools.</p>
+                <div className="relative flex-1 max-w-md">
+                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-base-content/40" />
+                    <input
+                        type="text"
+                        placeholder="Search by name, publisher or package..."
+                        className="input input-bordered w-full pl-10 h-11"
+                        value={searchQuery}
+                        onChange={(e) => setSearchQuery(e.target.value)}
+                    />
                 </div>
                 <button
                     onClick={() => { setEditingAsset(null); setIsModalOpen(true); }}
@@ -95,9 +119,10 @@ export default function Software() {
             ) : (
                 <AssetTable
                     columns={columns}
-                    data={assets}
+                    data={filteredAssets}
                     onEdit={handleEdit}
                     onDelete={handleDelete}
+                    onView={handleView}
                 />
             )}
 
@@ -108,6 +133,13 @@ export default function Software() {
                 onSubmit={handleAddAsset}
                 initialData={editingAsset}
                 title={editingAsset ? "Edit Software License" : "Add Software License"}
+                assetType="software"
+            />
+
+            <AssetDetailsModal
+                isOpen={isDetailOpen}
+                onClose={() => setIsDetailOpen(false)}
+                asset={viewingAsset}
                 assetType="software"
             />
         </div>

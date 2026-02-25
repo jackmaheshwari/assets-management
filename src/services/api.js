@@ -50,4 +50,5 @@ export const endpoints = {
     software: 'software',
     nonIT: 'non-it-assets',
     employees: 'employees',
+    tickets: 'tickets',
 };

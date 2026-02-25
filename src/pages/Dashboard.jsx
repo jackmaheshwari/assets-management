@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
-import { LayoutDashboard, Monitor, Package, Server } from "lucide-react";
+import { LayoutDashboard, Monitor, Package, Server, Ticket as TicketIcon } from "lucide-react";
 import { StatCard } from "../components/StatCard";
+import { StatusBadge } from "../components/StatusBadge";
 import {
     BarChart,
     Bar,
@@ -16,7 +17,7 @@ import {
 } from 'recharts';
 import { api } from "../services/api";
 
-const COLORS = ['#3B82F6', '#10B981', '#F59E0B'];
+const COLORS = ['#3B82F6', '#10B981', '#F59E0B', '#EF4444'];
 
 const activityData = [
     { name: 'Mon', assets: 12 },
@@ -32,32 +33,36 @@ export default function Dashboard() {
         software: 0,
         nonIT: 0,
         employees: 0,
+        tickets: 0,
         total: 0
     });
+    const [tickets, setTickets] = useState([]);
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-        const fetchStats = async () => {
+        const fetchData = async () => {
             try {
-                // Ensure backend has this endpoint or fetch all individually
-                // Since I just added /api/stats to backend, this should work.
-                // If not, I'd fetch individually.
-                const data = await api.get('stats');
-                setStats(data);
+                const [statsData, ticketsData] = await Promise.all([
+                    api.get('stats'),
+                    api.get('tickets')
+                ]);
+                setStats(statsData);
+                setTickets(ticketsData.slice(0, 5));
             } catch (error) {
-                console.error("Failed to fetch stats:", error);
+                console.error("Failed to fetch dashboard data:", error);
             } finally {
                 setLoading(false);
             }
         };
 
-        fetchStats();
+        fetchData();
     }, []);
 
     const pieData = [
         { name: 'Hardware', value: stats.hardware },
         { name: 'Software', value: stats.software },
         { name: 'Non-IT', value: stats.nonIT },
+        { name: 'Tickets', value: stats.tickets },
     ];
 
     if (loading) {
@@ -68,7 +73,7 @@ export default function Dashboard() {
         <div className="space-y-8">
 
             {/* Stats Grid */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6">
                 <StatCard
                     title="Total Assets"
                     value={stats.total}
@@ -100,6 +105,14 @@ export default function Dashboard() {
                     trend="down"
                     trendValue="2"
                     color="bg-warning"
+                />
+                <StatCard
+                    title="Tickets"
+                    value={stats.tickets}
+                    icon={TicketIcon}
+                    trend="up"
+                    trendValue="3"
+                    color="bg-error"
                 />
             </div>
 
@@ -165,6 +178,51 @@ export default function Dashboard() {
                                 </BarChart>
                             </ResponsiveContainer>
                         </div>
+                    </div>
+                </div>
+            </div>
+
+            {/* Tickets Table */}
+            <div className="card bg-base-100 shadow-xl overflow-hidden">
+                <div className="card-body p-0">
+                    <div className="p-6 border-b border-base-200 flex justify-between items-center">
+                        <h2 className="card-title text-base-content/80">Recent Tickets</h2>
+                        <button className="btn btn-sm btn-ghost text-primary">View All</button>
+                    </div>
+                    <div className="overflow-x-auto">
+                        <table className="table table-zebra w-full">
+                            <thead>
+                                <tr>
+                                    <th className="bg-base-100">Issue</th>
+                                    <th className="bg-base-100">Asset</th>
+                                    <th className="bg-base-100">Raised By</th>
+                                    <th className="bg-base-100">Priority</th>
+                                    <th className="bg-base-100">Status</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {tickets.map((ticket) => (
+                                    <tr key={ticket._id} className="hover">
+                                        <td>
+                                            <div className="font-bold">{ticket.title}</div>
+                                            <div className="text-sm opacity-50">{ticket.category}</div>
+                                        </td>
+                                        <td>{ticket.assetName}</td>
+                                        <td>{ticket.raisedBy}</td>
+                                        <td>
+                                            <span className={`badge badge-sm ${
+                                                ticket.priority === 'Urgent' ? 'badge-error' :
+                                                ticket.priority === 'High' ? 'badge-warning' :
+                                                ticket.priority === 'Medium' ? 'badge-info' : 'badge-ghost'
+                                            }`}>
+                                                {ticket.priority}
+                                            </span>
+                                        </td>
+                                        <td><StatusBadge status={ticket.status} /></td>
+                                    </tr>
+                                ))}
+                            </tbody>
+                        </table>
                     </div>
                 </div>
             </div>

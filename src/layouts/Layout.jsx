@@ -31,15 +31,7 @@ export function Layout() {
                     </div>
                     <div className="flex-1 px-2 mx-2 text-xl font-bold lg:hidden">AssetManager</div>
                     <div className="flex-1 hidden lg:flex">
-                        {/* Breadcrumbs placeholder or Search */}
-                        <div className="relative w-full max-w-md hidden md:flex items-center group">
-                            <Search className="absolute left-3 w-4 h-4 text-base-content/50 group-focus-within:text-primary transition-colors duration-300" />
-                            <input
-                                type="text"
-                                placeholder="Search assets..."
-                                className="input input-sm input-bordered rounded-full w-48 focus:w-64 transition-all duration-300 pl-10 bg-base-200/50 focus:bg-base-100 focus:shadow-md focus:border-primary/50"
-                            />
-                        </div>
+                        {/* Breadcrumbs placeholder */}
                     </div>
                     <div className="flex-none gap-4">
                         {/* Theme Controller */}

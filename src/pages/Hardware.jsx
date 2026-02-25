@@ -1,7 +1,8 @@
-import { useState, useEffect } from "react";
-import { Plus } from "lucide-react";
+import { useState, useEffect, useMemo } from "react";
+import { Plus, Search } from "lucide-react";
 import { AssetTable } from "../components/AssetTable";
 import { AssetForm } from "../components/AssetForm";
+import { AssetDetailsModal } from "../components/AssetDetailsModal";
 import { StatusDot } from "../components/StatusBadge";
 import { api, endpoints } from "../services/api";
 
@@ -10,6 +11,9 @@ export default function Hardware() {
     const [loading, setLoading] = useState(true);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [editingAsset, setEditingAsset] = useState(null);
+    const [searchQuery, setSearchQuery] = useState("");
+    const [viewingAsset, setViewingAsset] = useState(null);
+    const [isDetailOpen, setIsDetailOpen] = useState(false);
 
     const fetchAssets = async () => {
         try {
@@ -26,6 +30,17 @@ export default function Hardware() {
     useEffect(() => {
         fetchAssets();
     }, []);
+
+    const filteredAssets = useMemo(() => {
+        return assets.filter(asset => 
+            asset.name?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+            asset.assetId?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+            asset.manufacturer?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+            asset.modelName?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+            asset.assignee?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+            asset.serialNumber?.toLowerCase().includes(searchQuery.toLowerCase())
+        );
+    }, [assets, searchQuery]);
 
     const columns = [
         {
@@ -77,6 +92,11 @@ export default function Hardware() {
         setIsModalOpen(true);
     };
 
+    const handleView = (asset) => {
+        setViewingAsset(asset);
+        setIsDetailOpen(true);
+    };
+
     const handleDelete = async (asset) => {
         if (confirm("Are you sure you want to delete this asset?")) {
             try {
@@ -92,9 +112,15 @@ export default function Hardware() {
     return (
         <div className="space-y-6">
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-                <div>
-                    <h1 className="text-3xl font-bold text-base-content tracking-tight">Hardware Assets</h1>
-                    <p className="text-base-content/70 mt-1">Manage laptops, desktops, printers, and other devices.</p>
+                <div className="relative flex-1 max-w-md">
+                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-base-content/40" />
+                    <input
+                        type="text"
+                        placeholder="Search by name, ID, serial or assignee..."
+                        className="input input-bordered w-full pl-10 h-11"
+                        value={searchQuery}
+                        onChange={(e) => setSearchQuery(e.target.value)}
+                    />
                 </div>
                 <button
                     onClick={() => { setEditingAsset(null); setIsModalOpen(true); }}
@@ -110,9 +136,10 @@ export default function Hardware() {
             ) : (
                 <AssetTable
                     columns={columns}
-                    data={assets}
+                    data={filteredAssets}
                     onEdit={handleEdit}
                     onDelete={handleDelete}
+                    onView={handleView}
                 />
             )}
 
@@ -123,6 +150,13 @@ export default function Hardware() {
                 onSubmit={handleAddAsset}
                 initialData={editingAsset}
                 title={editingAsset ? "Edit Hardware" : "Add Hardware"}
+                assetType="hardware"
+            />
+
+            <AssetDetailsModal
+                isOpen={isDetailOpen}
+                onClose={() => setIsDetailOpen(false)}
+                asset={viewingAsset}
                 assetType="hardware"
             />
         </div>

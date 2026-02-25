@@ -1,7 +1,8 @@
-import { useState, useEffect } from "react";
-import { Plus, Users } from "lucide-react";
+import { useState, useEffect, useMemo } from "react";
+import { Plus, Search, Users } from "lucide-react";
 import { AssetTable } from "../components/AssetTable";
 import { EmployeeForm } from "../components/EmployeeForm";
+import { AssetDetailsModal } from "../components/AssetDetailsModal";
 import { api, endpoints } from "../services/api";
 
 export default function Team() {
@@ -9,6 +10,9 @@ export default function Team() {
     const [loading, setLoading] = useState(true);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [editingEmployee, setEditingEmployee] = useState(null);
+    const [searchQuery, setSearchQuery] = useState("");
+    const [viewingEmployee, setViewingEmployee] = useState(null);
+    const [isDetailOpen, setIsDetailOpen] = useState(false);
 
     const fetchEmployees = async () => {
         try {
@@ -25,6 +29,14 @@ export default function Team() {
     useEffect(() => {
         fetchEmployees();
     }, []);
+
+    const filteredEmployees = useMemo(() => {
+        return employees.filter(emp => 
+            emp.name?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+            emp.email?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+            emp.username?.toLowerCase().includes(searchQuery.toLowerCase())
+        );
+    }, [employees, searchQuery]);
 
     const workloadStyles = {
         High: "bg-error",
@@ -76,6 +88,11 @@ export default function Team() {
         setIsModalOpen(true);
     };
 
+    const handleView = (employee) => {
+        setViewingEmployee(employee);
+        setIsDetailOpen(true);
+    };
+
     const handleDelete = async (employee) => {
         if (confirm(`Are you sure you want to remove ${employee.name} from the team?`)) {
             try {
@@ -91,9 +108,15 @@ export default function Team() {
     return (
         <div className="space-y-6">
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-                <div>
-                    <h1 className="text-3xl font-bold text-base-content tracking-tight">Our Team</h1>
-                    <p className="text-base-content/70 mt-1">Manage employee details, workloads, and assignments.</p>
+                <div className="relative flex-1 max-w-md">
+                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-base-content/40" />
+                    <input
+                        type="text"
+                        placeholder="Search by name, email or username..."
+                        className="input input-bordered w-full pl-10 h-11"
+                        value={searchQuery}
+                        onChange={(e) => setSearchQuery(e.target.value)}
+                    />
                 </div>
                 <button
                     className="flex items-center justify-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors shadow-sm font-medium"
@@ -109,9 +132,10 @@ export default function Team() {
             ) : (
                 <AssetTable
                     columns={columns}
-                    data={employees}
+                    data={filteredEmployees}
                     onEdit={handleEdit}
                     onDelete={handleDelete}
+                    onView={handleView}
                 />
             )}
 
@@ -122,6 +146,13 @@ export default function Team() {
                 onSubmit={handleAddEmployee}
                 initialData={editingEmployee}
                 title={editingEmployee ? "Edit Member" : "Add Member"}
+            />
+
+            <AssetDetailsModal
+                isOpen={isDetailOpen}
+                onClose={() => setIsDetailOpen(false)}
+                asset={viewingEmployee}
+                assetType="employee"
             />
         </div>
     );

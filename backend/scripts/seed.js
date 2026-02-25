@@ -4,17 +4,18 @@ import { Employee } from '../models/Employee.js';
 import { Hardware } from '../models/Hardware.js';
 import { Software } from '../models/Software.js';
 import { NonITAsset } from '../models/NonITAsset.js';
+import { Ticket } from '../models/Ticket.js';
 
 dotenv.config();
 
 const MONGODB_URI = process.env.MONGODB_URI || 'mongodb://127.0.0.1:27017/assets-management';
 
 const employees = [
-    { name: "John Doe", username: "jdoe", email: "john.doe@example.com", workload: "High", status: "Active" },
-    { name: "Jane Smith", username: "jsmith", email: "jane.smith@example.com", workload: "Medium", status: "Active" },
-    { name: "Robert Wilson", username: "rwilson", email: "robert.wilson@example.com", workload: "Low", status: "Active" },
-    { name: "Sarah Connor", username: "sconnor", email: "sarah.connor@example.com", workload: "High", status: "Active" },
-    { name: "Michael Scott", username: "mscott", email: "michael.scott@example.com", workload: "Medium", status: "Active" },
+    { name: "John Doe", username: "jdoe", email: "john.doe@example.com", password: "password123", workload: "High", status: "Active" },
+    { name: "Jane Smith", username: "jsmith", email: "jane.smith@example.com", password: "password123", workload: "Medium", status: "Active" },
+    { name: "Robert Wilson", username: "rwilson", email: "robert.wilson@example.com", password: "password123", workload: "Low", status: "Active" },
+    { name: "Sarah Connor", username: "sconnor", email: "sarah.connor@example.com", password: "password123", workload: "High", status: "Active" },
+    { name: "Michael Scott", username: "mscott", email: "michael.scott@example.com", password: "password123", workload: "Medium", status: "Active" },
 ];
 
 const hardware = [
@@ -41,6 +42,18 @@ const nonITAssets = [
     { assetId: "AST-N5", name: "Office Sofa", status: "Retired", assignee: "Lobby", purchaseDate: "2020-03-15" },
 ];
 
+const tickets = [
+    { title: "Screen Flickering", description: "My MacBook screen flickers randomly.", status: "Open", priority: "High", category: "Hardware", raisedBy: "John Doe", assetName: "MacBook Pro 16" },
+    { title: "Adobe CC Activation", description: "Cannot activate Adobe CC license.", status: "In Progress", priority: "Medium", category: "Software", raisedBy: "Jane Smith", assetName: "Adobe Creative Cloud" },
+    { title: "Printer Connectivity", description: "Unable to connect to HP LaserJet.", status: "Open", priority: "Medium", category: "Hardware", raisedBy: "Robert Wilson", assetName: "HP LaserJet Pro" },
+    { title: "Slack Desktop App Crash", description: "Slack app crashes on startup.", status: "Resolved", priority: "Low", category: "Software", raisedBy: "Sarah Connor", assetName: "Slack" },
+    { title: "Keyboard Keys Sticking", description: "Several keys on the Lenovo ThinkPad are not responding.", status: "Open", priority: "Medium", category: "Hardware", raisedBy: "Michael Scott", assetName: "Lenovo ThinkPad X1" },
+    { title: "VPN Connection Issue", description: "Cannot connect to the corporate VPN from home.", status: "Open", priority: "High", category: "Software", raisedBy: "Jane Smith", assetName: "Cisco AnyConnect" },
+    { title: "Mouse Battery Drain", description: "Wireless mouse battery dies every 2 days.", status: "Resolved", priority: "Low", category: "Hardware", raisedBy: "Robert Wilson", assetName: "Logitech MX Master" },
+    { title: "Visual Studio Code Plugins", description: "Extensions are not syncing across devices.", status: "In Progress", priority: "Low", category: "Software", raisedBy: "John Doe", assetName: "VS Code" },
+    { title: "Monitor No Signal", description: "The second monitor shows 'No Signal' error.", status: "Open", priority: "High", category: "Hardware", raisedBy: "Sarah Connor", assetName: "Dell 27-inch Monitor" },
+];
+
 async function seedDatabase() {
     try {
         await mongoose.connect(MONGODB_URI);
@@ -51,12 +64,14 @@ async function seedDatabase() {
         await Hardware.deleteMany({});
         await Software.deleteMany({});
         await NonITAsset.deleteMany({});
+        await Ticket.deleteMany({});
 
         // Insert new data
         await Employee.insertMany(employees);
         await Hardware.insertMany(hardware);
         await Software.insertMany(software);
         await NonITAsset.insertMany(nonITAssets);
+        await Ticket.insertMany(tickets);
 
         console.log('Database seeded successfully');
         process.exit(0);

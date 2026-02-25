@@ -4,6 +4,7 @@ import Dashboard from "./pages/Dashboard";
 import Hardware from "./pages/Hardware";
 import Software from "./pages/Software";
 import NonIT from "./pages/NonIT";
+import Tickets from "./pages/Tickets";
 import Team from "./pages/Team";
 import Reports from "./pages/Reports";
 import Login from "./pages/Login";
@@ -25,6 +26,7 @@ function App() {
           <Route path="/hardware" element={<Hardware />} />
           <Route path="/software" element={<Software />} />
           <Route path="/non-it" element={<NonIT />} />
+          <Route path="/tickets" element={<Tickets />} />
           <Route path="/team" element={<Team />} />
           <Route path="/reports" element={<Reports />} />
         </Route>
