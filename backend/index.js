@@ -66,6 +66,24 @@ app.post('/api/login', async (req, res) => {
     }
 });
 
+// Verify Route
+app.post('/api/verify', async (req, res) => {
+    try {
+        const { email } = req.body;
+        if (!email) return res.status(400).json({ message: "Email is required" });
+
+        const employee = await Employee.findOne({ email });
+        if (!employee) {
+            return res.status(401).json({ message: "User not found" });
+        }
+
+        const { password: _, ...userWithoutPassword } = employee.toObject();
+        res.json(userWithoutPassword);
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+});
+
 // Generic CRUD handler
 const createCrudRoutes = (router, Model) => {
     // GET all
