@@ -4,14 +4,14 @@ import { AuthContext } from "./AuthContextDefinition";
 
 export const AuthProvider = ({ children }) => {
     const [user, setUser] = useState(() => {
-        const storedUser = localStorage.getItem("user");
+        const storedUser = sessionStorage.getItem("user");
         return storedUser ? JSON.parse(storedUser) : null;
     });
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
         const verifyUser = async () => {
-            const storedUser = localStorage.getItem("user");
+            const storedUser = sessionStorage.getItem("user");
             if (storedUser) {
                 try {
                     const parsedUser = JSON.parse(storedUser);
@@ -24,17 +24,16 @@ export const AuthProvider = ({ children }) => {
                     if (response.ok) {
                         const userData = await response.json();
                         setUser(userData);
-                        localStorage.setItem("user", JSON.stringify(userData));
-                    } else {
-                        // User not found or server error
+                        sessionStorage.setItem("user", JSON.stringify(userData));
+                    } else if (response.status === 401 || response.status === 404) {
+                        // Only log out if the server explicitly rejects the user
                         setUser(null);
-                        localStorage.removeItem("user");
+                        sessionStorage.removeItem("user");
                     }
                 } catch (error) {
                     console.error("Verification failed:", error);
-                    // If server is down, we also clear the session to prevent auto-login
-                    setUser(null);
-                    localStorage.removeItem("user");
+                    // On network error or server down, we DO NOT clear the session.
+                    // This prevents accidental logouts during refreshes or lag.
                 }
             }
             setLoading(false);
@@ -57,7 +56,7 @@ export const AuthProvider = ({ children }) => {
 
             const userData = await response.json();
             setUser(userData);
-            localStorage.setItem("user", JSON.stringify(userData));
+            sessionStorage.setItem("user", JSON.stringify(userData));
             return true;
         } catch (error) {
             console.error("Login failed:", error);
@@ -67,6 +66,7 @@ export const AuthProvider = ({ children }) => {
 
     const logout = () => {
         setUser(null);
+        sessionStorage.removeItem("user");
         localStorage.removeItem("user");
     };
 

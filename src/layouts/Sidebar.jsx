@@ -1,11 +1,11 @@
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { LayoutDashboard, Briefcase, Package, Monitor, LogOut, Users, FileText, Ticket } from "lucide-react";
 import clsx from "clsx";
 import { useAuth } from "../context/useAuth";
 import { Logo } from "../components/Logo";
 
 const navigation = [
-    { name: "Dashboard", href: "/", icon: LayoutDashboard },
+    { name: "Dashboard", href: "/dashboard", icon: LayoutDashboard },
     { name: "Hardware Assets", href: "/hardware", icon: Monitor },
     { name: "Software Assets", href: "/software", icon: Package },
     { name: "Non-IT Assets", href: "/non-it", icon: Briefcase },
@@ -16,7 +16,13 @@ const navigation = [
 
 export function Sidebar() {
     const location = useLocation();
+    const navigate = useNavigate();
     const { logout, user } = useAuth();
+
+    const handleLogout = () => {
+        logout();
+        window.location.href = "/";
+    };
 
     return (
         <div className="flex flex-col h-full w-20 bg-base-200 text-base-content border-r border-base-300 transition-all duration-300 overflow-visible">
@@ -57,7 +63,7 @@ export function Sidebar() {
                 </div>
 
                 <button
-                    onClick={logout}
+                    onClick={handleLogout}
                     className="btn btn-ghost btn-circle btn-sm text-base-content/70 hover:text-error tooltip tooltip-right"
                     data-tip="Sign Out"
                 >
