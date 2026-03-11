@@ -1,4 +1,4 @@
-import { Search, PlusCircle, ShoppingBag, BookOpen, Clock, Megaphone, CheckCircle2, ChevronRight, MessageSquare } from "lucide-react";
+import { Search, PlusCircle, BookOpen } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useAuth } from "../context/useAuth";
 import { Logo } from "../components/Logo";
@@ -8,13 +8,14 @@ export default function Landing() {
 
     const quickActions = [
         { name: "Report an Incident", icon: PlusCircle, href: "/tickets", desc: "Log a technical issue or bug", color: "text-error" },
-        { name: "Request a Service", icon: ShoppingBag, href: "/software", desc: "Request new hardware or software", color: "text-primary" },
-        { name: "Knowledge Base", icon: BookOpen, href: "/reports", desc: "Browse FAQs and help guides", color: "text-info" },
+        { name: "Knowledge Base", icon: BookOpen, href: "/software-guides", desc: "Browse FAQs and help guides", color: "text-info" },
     ];
 
-    const announcements = [
-        { id: 1, title: "Scheduled Maintenance: Asset Database", date: "Oct 24, 2023", type: "Maintenance" },
-        { id: 2, title: "New Software Request Policy Updated", date: "Oct 20, 2023", type: "Policy" },
+    const softwareGuides = [
+        { id: 1, title: "Adobe Creative Cloud: Installation & Activation Guide", publisher: "Adobe", category: "Design" },
+        { id: 2, title: "Microsoft 365: Optimizing your Workflow in Teams", publisher: "Microsoft", category: "Productivity" },
+        { id: 3, title: "JetBrains: Setting up your Development Environment", publisher: "JetBrains", category: "Development" },
+        { id: 4, title: "Slack: Advanced Tips for Team Collaboration", publisher: "Slack", category: "Communication" },
     ];
 
     return (
@@ -75,50 +76,26 @@ export default function Landing() {
             {/* Main Content Area */}
             <main className="max-w-6xl mx-auto px-6 pb-20 space-y-12">
                 
-                {/* Announcements */}
+                {/* Software Guides */}
                 <section>
                     <div className="flex items-center justify-between mb-6">
                         <h2 className="text-xl font-bold flex items-center gap-2">
-                            <Megaphone className="w-5 h-5 text-warning" /> Announcements
+                            <BookOpen className="w-5 h-5 text-info" /> Software Guides
                         </h2>
-                        <button className="btn btn-ghost btn-sm text-primary">View All</button>
+                        <Link to="/software-guides" className="btn btn-ghost btn-sm text-primary">View All Guides</Link>
                     </div>
-                    <div className="space-y-4">
-                        {announcements.map(ann => (
-                            <div key={ann.id} className="bg-base-100 p-5 rounded-xl border border-base-300 flex items-start gap-4 hover:shadow-md transition-shadow">
-                                <div className="bg-warning/10 p-2 rounded-lg">
-                                    <Megaphone className="w-5 h-5 text-warning" />
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        {softwareGuides.map(guide => (
+                            <div key={guide.id} className="bg-base-100 p-5 rounded-xl border border-base-300 flex items-start gap-4 hover:shadow-md transition-shadow">
+                                <div className="bg-info/10 p-2 rounded-lg">
+                                    <BookOpen className="w-5 h-5 text-info" />
                                 </div>
                                 <div className="flex-1">
-                                    <h4 className="font-bold text-base-content hover:text-primary cursor-pointer">{ann.title}</h4>
-                                    <p className="text-xs text-base-content/50 mt-1">{ann.type} • {ann.date}</p>
+                                    <h4 className="font-bold text-base-content hover:text-primary cursor-pointer">{guide.title}</h4>
+                                    <p className="text-xs text-base-content/50 mt-1">{guide.publisher} • {guide.category}</p>
                                 </div>
                             </div>
                         ))}
-                    </div>
-                </section>
-
-                {/* Popular Articles */}
-                <section>
-                    <div className="flex items-center justify-between mb-6">
-                        <h2 className="text-xl font-bold flex items-center gap-2">
-                            <CheckCircle2 className="w-5 h-5 text-success" /> Popular Articles
-                        </h2>
-                        <button className="btn btn-ghost btn-sm text-primary">Browse KB</button>
-                    </div>
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                        <a className="block p-6 bg-base-100 rounded-xl border border-base-300 hover:bg-base-200 transition-colors shadow-sm">
-                            <h5 className="font-semibold text-base mb-2">How to reset your workstation password</h5>
-                            <span className="text-xs text-base-content/40">Viewed 1.2k times • Security</span>
-                        </a>
-                        <a className="block p-6 bg-base-100 rounded-xl border border-base-300 hover:bg-base-200 transition-colors shadow-sm">
-                            <h5 className="font-semibold text-base mb-2">Setting up VPN on mobile devices</h5>
-                            <span className="text-xs text-base-content/40">Viewed 850 times • Networking</span>
-                        </a>
-                        <a className="block p-6 bg-base-100 rounded-xl border border-base-300 hover:bg-base-200 transition-colors shadow-sm">
-                            <h5 className="font-semibold text-base mb-2">Requesting hardware upgrades</h5>
-                            <span className="text-xs text-base-content/40">Viewed 620 times • Procurement</span>
-                        </a>
                     </div>
                 </section>
 
@@ -130,12 +107,6 @@ export default function Landing() {
                     <div className="flex items-center gap-3 opacity-60">
                         <Logo className="w-8 h-8 grayscale" />
                         <span className="text-lg font-bold">Support Portal</span>
-                    </div>
-                    <div className="flex gap-8 text-sm text-base-content/60">
-                        <a className="hover:text-primary link link-hover">Terms</a>
-                        <a className="hover:text-primary link link-hover">Privacy</a>
-                        <a className="hover:text-primary link link-hover">Contact</a>
-                        <a className="hover:text-primary link link-hover">Status</a>
                     </div>
                     <p className="text-xs text-base-content/40">© 2026 AssetManager Inc. All rights reserved.</p>
                 </div>

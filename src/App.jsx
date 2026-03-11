@@ -9,6 +9,7 @@ import Team from "./pages/Team";
 import Reports from "./pages/Reports";
 import Login from "./pages/Login";
 import Landing from "./pages/Landing";
+import SoftwareGuides from "./pages/SoftwareGuides";
 import { AuthProvider } from "./context/AuthContext";
 import { ProtectedRoute } from "./components/ProtectedRoute";
 
@@ -18,6 +19,7 @@ function App() {
       <Routes>
         <Route path="/" element={<Landing />} />
         <Route path="/login" element={<Login />} />
+        <Route path="/software-guides" element={<SoftwareGuides />} />
 
         <Route element={
           <ProtectedRoute>
