@@ -1,13 +1,29 @@
-import { Outlet } from "react-router-dom";
+import { Outlet, useLocation } from "react-router-dom";
 import { Sidebar } from "./Sidebar";
 import { useEffect, useState } from "react";
 import { Search } from "lucide-react";
 
 export function Layout() {
+    const location = useLocation();
     const [theme, setTheme] = useState(() => {
         const stored = localStorage.getItem("theme");
         return (stored === "dark" || stored === "light") ? stored : "dark";
     });
+
+    const getPageTitle = (pathname) => {
+        const path = pathname.split('/')[1];
+        switch (path) {
+            case 'dashboard': return 'Dashboard Overview';
+            case 'hardware': return 'Hardware Assets';
+            case 'software': return 'Software Licenses';
+            case 'non-it': return 'Non-IT Assets';
+            case 'tickets': return 'Support Tickets';
+            case 'team': return 'Team Management';
+            case 'reports': return 'Reports & Analytics';
+            case 'settings': return 'System Settings';
+            default: return 'Asset Management';
+        }
+    };
 
     useEffect(() => {
         document.documentElement.setAttribute("data-theme", theme);
@@ -31,7 +47,9 @@ export function Layout() {
                     </div>
                     <div className="flex-1 px-2 mx-2 text-xl font-bold lg:hidden">AssetManager</div>
                     <div className="flex-1 hidden lg:flex">
-                        {/* Breadcrumbs placeholder */}
+                        <h2 className="text-xl font-extrabold text-base-content tracking-tight">
+                            {getPageTitle(location.pathname)}
+                        </h2>
                     </div>
                     <div className="flex-none gap-4">
                         {/* Theme Controller */}

@@ -1,8 +1,9 @@
 import { X } from "lucide-react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { createPortal } from "react-dom";
 
 export function AssetForm({ isOpen, onClose, onSubmit, initialData, title, assetType }) {
-    const [formData, setFormData] = useState(initialData || {
+    const [formData, setFormData] = useState({
         name: "",
         status: "Active",
         assignee: "",
@@ -15,6 +16,25 @@ export function AssetForm({ isOpen, onClose, onSubmit, initialData, title, asset
         macAddress: "",
         ipAddress: "",
     });
+
+    useEffect(() => {
+        if (initialData) {
+            setFormData(initialData);
+        } else {
+            setFormData({
+                name: "",
+                status: "Active",
+                assignee: "",
+                purchaseDate: "",
+                manufacturer: "",
+                modelName: "",
+                modelNumber: "",
+                serialNumber: "",
+                macAddress: "",
+                ipAddress: "",
+            });
+        }
+    }, [initialData, isOpen]);
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -29,266 +49,274 @@ export function AssetForm({ isOpen, onClose, onSubmit, initialData, title, asset
 
     if (!isOpen) return null;
 
-    return (
-        <div className="modal modal-open">
-            <div className="modal-box w-11/12 max-w-2xl bg-base-100">
-                <button
-                    onClick={onClose}
-                    className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2"
-                >
-                    <X className="w-5 h-5" />
-                </button>
+    const modalContent = (
+        <div className="fixed inset-0 z-[1000] flex items-center justify-center p-4">
+            {/* Backdrop */}
+            <div 
+                className="absolute inset-0 bg-black/60 backdrop-blur-sm transition-opacity" 
+                onClick={onClose}
+            />
+            
+            {/* Modal Box */}
+            <div className="relative bg-base-100 rounded-2xl shadow-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto animate-in zoom-in-95 duration-200">
+                <div className="p-6 md:p-8">
+                    <button
+                        onClick={onClose}
+                        className="btn btn-sm btn-circle btn-ghost absolute right-4 top-4"
+                    >
+                        <X className="w-5 h-5" />
+                    </button>
 
-                <h3 className="font-bold text-lg mb-6">{title}</h3>
+                    <h3 className="font-bold text-2xl mb-8 text-base-content">{title}</h3>
 
-                <form onSubmit={handleSubmit} className="space-y-4">
-                    <div className="grid grid-cols-2 gap-4">
-                        <div className="form-control">
-                            <label className="label">
-                                <span className="label-text">Asset Name</span>
-                            </label>
-                            <input
-                                type="text"
-                                name="name"
-                                value={formData.name}
-                                onChange={handleChange}
-                                className="input input-bordered w-full"
-                                required
-                            />
-                        </div>
-
-                        <div className="form-control">
-                            <label className="label">
-                                <span className="label-text">Status</span>
-                            </label>
-                            <select
-                                name="status"
-                                value={formData.status}
-                                onChange={handleChange}
-                                className="select select-bordered w-full"
-                            >
-                                <option value="Active">Active</option>
-                                <option value="In Use">In Use</option>
-                                <option value="In Repair">In Repair</option>
-                                <option value="Retired">Retired</option>
-                            </select>
-                        </div>
-                    </div>
-
-                    {assetType !== "software" && (
-                        <div className="grid grid-cols-2 gap-4">
+                    <form onSubmit={handleSubmit} className="space-y-6">
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                             <div className="form-control">
                                 <label className="label">
-                                    <span className="label-text">Assigned To</span>
+                                    <span className="label-text font-semibold">Asset Name</span>
                                 </label>
                                 <input
                                     type="text"
-                                    name="assignee"
-                                    value={formData.assignee || ""}
+                                    name="name"
+                                    value={formData.name}
                                     onChange={handleChange}
-                                    className="input input-bordered w-full"
-                                    placeholder="Employee Name or Department"
+                                    className="input input-bordered w-full focus:input-primary"
+                                    required
                                 />
                             </div>
 
                             <div className="form-control">
                                 <label className="label">
-                                    <span className="label-text">Purchase Date</span>
+                                    <span className="label-text font-semibold">Status</span>
                                 </label>
-                                <input
-                                    type="date"
-                                    name="purchaseDate"
-                                    value={formData.purchaseDate || ""}
+                                <select
+                                    name="status"
+                                    value={formData.status}
                                     onChange={handleChange}
-                                    className="input input-bordered w-full"
-                                />
+                                    className="select select-bordered w-full focus:select-primary"
+                                >
+                                    <option value="Active">Active</option>
+                                    <option value="In Use">In Use</option>
+                                    <option value="In Repair">In Repair</option>
+                                    <option value="Retired">Retired</option>
+                                </select>
                             </div>
                         </div>
-                    )}
 
-                    {assetType === "software" && (
-                        <>
-                            <div className="grid grid-cols-2 gap-4">
+                        {assetType !== "software" && (
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                 <div className="form-control">
                                     <label className="label">
-                                        <span className="label-text">Version</span>
+                                        <span className="label-text font-semibold">Assigned To</span>
                                     </label>
                                     <input
                                         type="text"
-                                        name="version"
-                                        value={formData.version || ""}
+                                        name="assignee"
+                                        value={formData.assignee || ""}
                                         onChange={handleChange}
-                                        className="input input-bordered w-full"
-                                        placeholder="e.g. 1.0.0"
+                                        className="input input-bordered w-full focus:input-primary"
+                                        placeholder="Employee Name or Department"
                                     />
                                 </div>
+
                                 <div className="form-control">
                                     <label className="label">
-                                        <span className="label-text">Publisher</span>
-                                    </label>
-                                    <input
-                                        type="text"
-                                        name="publisher"
-                                        value={formData.publisher || ""}
-                                        onChange={handleChange}
-                                        className="input input-bordered w-full"
-                                        placeholder="e.g. Adobe"
-                                    />
-                                </div>
-                            </div>
-                            <div className="grid grid-cols-2 gap-4">
-                                <div className="form-control">
-                                    <label className="label">
-                                        <span className="label-text">Package Name</span>
-                                    </label>
-                                    <input
-                                        type="text"
-                                        name="packageName"
-                                        value={formData.packageName || ""}
-                                        onChange={handleChange}
-                                        className="input input-bordered w-full"
-                                        placeholder="e.g. adobe.cc"
-                                    />
-                                </div>
-                                <div className="form-control">
-                                    <label className="label">
-                                        <span className="label-text">Install Date</span>
+                                        <span className="label-text font-semibold">Purchase Date</span>
                                     </label>
                                     <input
                                         type="date"
-                                        name="installDate"
-                                        value={formData.installDate || ""}
+                                        name="purchaseDate"
+                                        value={formData.purchaseDate || ""}
                                         onChange={handleChange}
-                                        className="input input-bordered w-full"
+                                        className="input input-bordered w-full focus:input-primary"
                                     />
                                 </div>
                             </div>
-                            <div className="form-control">
-                                <label className="label">
-                                    <span className="label-text">Installed Machine</span>
-                                </label>
-                                <input
-                                    type="text"
-                                    name="installedMachine"
-                                    value={formData.installedMachine || ""}
-                                    onChange={handleChange}
-                                    className="input input-bordered w-full"
-                                    placeholder="e.g. MacBook Pro 16"
-                                />
-                            </div>
-                        </>
-                    )}
+                        )}
 
-                    {assetType === "hardware" && (
-                        <>
-                            <div className="grid grid-cols-2 gap-4">
-                                <div className="form-control">
-                                    <label className="label">
-                                        <span className="label-text">Manufacturer</span>
-                                    </label>
-                                    <input
-                                        type="text"
-                                        name="manufacturer"
-                                        value={formData.manufacturer || ""}
-                                        onChange={handleChange}
-                                        className="input input-bordered w-full"
-                                        placeholder="e.g. Dell"
-                                    />
+                        {assetType === "software" && (
+                            <>
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                    <div className="form-control">
+                                        <label className="label">
+                                            <span className="label-text font-semibold">Version</span>
+                                        </label>
+                                        <input
+                                            type="text"
+                                            name="version"
+                                            value={formData.version || ""}
+                                            onChange={handleChange}
+                                            className="input input-bordered w-full focus:input-primary"
+                                            placeholder="e.g. 1.0.0"
+                                        />
+                                    </div>
+                                    <div className="form-control">
+                                        <label className="label">
+                                            <span className="label-text font-semibold">Publisher</span>
+                                        </label>
+                                        <input
+                                            type="text"
+                                            name="publisher"
+                                            value={formData.publisher || ""}
+                                            onChange={handleChange}
+                                            className="input input-bordered w-full focus:input-primary"
+                                            placeholder="e.g. Adobe"
+                                        />
+                                    </div>
+                                </div>
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                    <div className="form-control">
+                                        <label className="label">
+                                            <span className="label-text font-semibold">Package Name</span>
+                                        </label>
+                                        <input
+                                            type="text"
+                                            name="packageName"
+                                            value={formData.packageName || ""}
+                                            onChange={handleChange}
+                                            className="input input-bordered w-full focus:input-primary"
+                                            placeholder="e.g. adobe.cc"
+                                        />
+                                    </div>
+                                    <div className="form-control">
+                                        <label className="label">
+                                            <span className="label-text font-semibold">Install Date</span>
+                                        </label>
+                                        <input
+                                            type="date"
+                                            name="installDate"
+                                            value={formData.installDate || ""}
+                                            onChange={handleChange}
+                                            className="input input-bordered w-full focus:input-primary"
+                                        />
+                                    </div>
                                 </div>
                                 <div className="form-control">
                                     <label className="label">
-                                        <span className="label-text">Model Name</span>
+                                        <span className="label-text font-semibold">Installed Machine</span>
                                     </label>
                                     <input
                                         type="text"
-                                        name="modelName"
-                                        value={formData.modelName || ""}
+                                        name="installedMachine"
+                                        value={formData.installedMachine || ""}
                                         onChange={handleChange}
-                                        className="input input-bordered w-full"
-                                        placeholder="e.g. XPS 15"
+                                        className="input input-bordered w-full focus:input-primary"
+                                        placeholder="e.g. MacBook Pro 16"
                                     />
                                 </div>
-                            </div>
-                            <div className="grid grid-cols-2 gap-4">
-                                <div className="form-control">
-                                    <label className="label">
-                                        <span className="label-text">Serial Number</span>
-                                    </label>
-                                    <input
-                                        type="text"
-                                        name="serialNumber"
-                                        value={formData.serialNumber || ""}
-                                        onChange={handleChange}
-                                        className="input input-bordered w-full"
-                                        placeholder="e.g. 123456789"
-                                    />
-                                </div>
-                                <div className="form-control">
-                                    <label className="label">
-                                        <span className="label-text">Model Number</span>
-                                    </label>
-                                    <input
-                                        type="text"
-                                        name="modelNumber"
-                                        value={formData.modelNumber || ""}
-                                        onChange={handleChange}
-                                        className="input input-bordered w-full"
-                                        placeholder="e.g. AB-123"
-                                    />
-                                </div>
-                            </div>
+                            </>
+                        )}
 
-                            <div className="grid grid-cols-2 gap-4">
-                                <div className="form-control">
-                                    <label className="label">
-                                        <span className="label-text">MAC Address</span>
-                                    </label>
-                                    <input
-                                        type="text"
-                                        name="macAddress"
-                                        value={formData.macAddress || ""}
-                                        onChange={handleChange}
-                                        className="input input-bordered w-full"
-                                        placeholder="e.g. 00:1A:2B:3C:4D:5E"
-                                    />
+                        {assetType === "hardware" && (
+                            <>
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                    <div className="form-control">
+                                        <label className="label">
+                                            <span className="label-text font-semibold">Manufacturer</span>
+                                        </label>
+                                        <input
+                                            type="text"
+                                            name="manufacturer"
+                                            value={formData.manufacturer || ""}
+                                            onChange={handleChange}
+                                            className="input input-bordered w-full focus:input-primary"
+                                            placeholder="e.g. Dell"
+                                        />
+                                    </div>
+                                    <div className="form-control">
+                                        <label className="label">
+                                            <span className="label-text font-semibold">Model Name</span>
+                                        </label>
+                                        <input
+                                            type="text"
+                                            name="modelName"
+                                            value={formData.modelName || ""}
+                                            onChange={handleChange}
+                                            className="input input-bordered w-full focus:input-primary"
+                                            placeholder="e.g. XPS 15"
+                                        />
+                                    </div>
                                 </div>
-                                <div className="form-control">
-                                    <label className="label">
-                                        <span className="label-text">IP Address</span>
-                                    </label>
-                                    <input
-                                        type="text"
-                                        name="ipAddress"
-                                        value={formData.ipAddress || ""}
-                                        onChange={handleChange}
-                                        className="input input-bordered w-full"
-                                        placeholder="e.g. 192.168.1.100"
-                                    />
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                    <div className="form-control">
+                                        <label className="label">
+                                            <span className="label-text font-semibold">Serial Number</span>
+                                        </label>
+                                        <input
+                                            type="text"
+                                            name="serialNumber"
+                                            value={formData.serialNumber || ""}
+                                            onChange={handleChange}
+                                            className="input input-bordered w-full focus:input-primary"
+                                            placeholder="e.g. 123456789"
+                                        />
+                                    </div>
+                                    <div className="form-control">
+                                        <label className="label">
+                                            <span className="label-text font-semibold">Model Number</span>
+                                        </label>
+                                        <input
+                                            type="text"
+                                            name="modelNumber"
+                                            value={formData.modelNumber || ""}
+                                            onChange={handleChange}
+                                            className="input input-bordered w-full focus:input-primary"
+                                            placeholder="e.g. AB-123"
+                                        />
+                                    </div>
                                 </div>
-                            </div>
-                        </>
-                    )}
 
-                    <div className="modal-action">
-                        <button
-                            type="button"
-                            onClick={onClose}
-                            className="btn"
-                        >
-                            Cancel
-                        </button>
-                        <button
-                            type="submit"
-                            className="btn btn-primary"
-                        >
-                            {initialData ? "Save Changes" : "Add Asset"}
-                        </button>
-                    </div>
-                </form>
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                    <div className="form-control">
+                                        <label className="label">
+                                            <span className="label-text font-semibold">MAC Address</span>
+                                        </label>
+                                        <input
+                                            type="text"
+                                            name="macAddress"
+                                            value={formData.macAddress || ""}
+                                            onChange={handleChange}
+                                            className="input input-bordered w-full focus:input-primary"
+                                            placeholder="e.g. 00:1A:2B:3C:4D:5E"
+                                        />
+                                    </div>
+                                    <div className="form-control">
+                                        <label className="label">
+                                            <span className="label-text font-semibold">IP Address</span>
+                                        </label>
+                                        <input
+                                            type="text"
+                                            name="ipAddress"
+                                            value={formData.ipAddress || ""}
+                                            onChange={handleChange}
+                                            className="input input-bordered w-full focus:input-primary"
+                                            placeholder="e.g. 192.168.1.100"
+                                        />
+                                    </div>
+                                </div>
+                            </>
+                        )}
+
+                        <div className="flex justify-end gap-3 pt-6">
+                            <button
+                                type="button"
+                                onClick={onClose}
+                                className="btn btn-ghost"
+                            >
+                                Cancel
+                            </button>
+                            <button
+                                type="submit"
+                                className="btn btn-primary px-8"
+                            >
+                                {initialData ? "Save Changes" : "Add Asset"}
+                            </button>
+                        </div>
+                    </form>
+                </div>
             </div>
-            <form method="dialog" className="modal-backdrop">
-                <button onClick={onClose}>close</button>
-            </form>
         </div>
     );
+
+    return createPortal(modalContent, document.body);
 }
