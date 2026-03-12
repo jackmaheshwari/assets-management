@@ -14,7 +14,7 @@ const hardwareSchema = new mongoose.Schema({
         enum: ['Active', 'Available', 'In Use', 'In Repair', 'Retired'],
         default: 'Available' 
     },
-    assignee: String, // Can be updated to ObjectId ref later if needed
+    assignee: String, 
     purchaseDate: Date
 }, { timestamps: true });
 

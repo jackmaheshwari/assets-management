@@ -6,7 +6,7 @@ export function ProtectedRoute({ children }) {
     const location = useLocation();
 
     if (!user) {
-        // Redirect to landing page but save the attempted location
+        
         return <Navigate to="/" state={{ from: location }} replace />;
     }
 

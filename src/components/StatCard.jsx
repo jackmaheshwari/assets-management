@@ -1,6 +1,6 @@
 import clsx from "clsx";
 
-// eslint-disable-next-line no-unused-vars
+
 export function StatCard({ title, value, icon: Icon, trend, trendValue, color }) {
     return (
         <div className="stats shadow w-full bg-base-100">

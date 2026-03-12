@@ -8,7 +8,7 @@ export function AssetForm({ isOpen, onClose, onSubmit, initialData, title, asset
         status: "Active",
         assignee: "",
         purchaseDate: "",
-        // Hardware specific
+        
         manufacturer: "",
         modelName: "",
         modelNumber: "",
@@ -51,13 +51,13 @@ export function AssetForm({ isOpen, onClose, onSubmit, initialData, title, asset
 
     const modalContent = (
         <div className="fixed inset-0 z-[1000] flex items-center justify-center p-4">
-            {/* Backdrop */}
+            {}
             <div 
                 className="absolute inset-0 bg-black/60 backdrop-blur-sm transition-opacity" 
                 onClick={onClose}
             />
             
-            {/* Modal Box */}
+            {}
             <div className="relative bg-base-100 rounded-2xl shadow-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto animate-in zoom-in-95 duration-200">
                 <div className="p-6 md:p-8">
                     <button

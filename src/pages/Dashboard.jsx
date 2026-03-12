@@ -72,7 +72,7 @@ export default function Dashboard() {
     return (
         <div className="space-y-8">
 
-            {/* Stats Grid */}
+            {}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6">
                 <StatCard
                     title="Total Assets"
@@ -116,9 +116,9 @@ export default function Dashboard() {
                 />
             </div>
 
-            {/* Charts Grid */}
+            {}
             <div className="grid grid-cols-1 xl:grid-cols-2 gap-8">
-                {/* Asset Distribution Chart */}
+                {}
                 <div className="card bg-base-100 shadow-xl overflow-hidden">
                     <div className="card-body p-6">
                         <h2 className="card-title text-base-content/80 mb-6">Asset Distribution</h2>
@@ -149,7 +149,7 @@ export default function Dashboard() {
                     </div>
                 </div>
 
-                {/* Recent Activity Chart */}
+                {}
                 <div className="card bg-base-100 shadow-xl overflow-hidden">
                     <div className="card-body p-6">
                         <h2 className="card-title text-base-content/80 mb-6">Assets Added (Last 5 Days)</h2>
@@ -182,7 +182,7 @@ export default function Dashboard() {
                 </div>
             </div>
 
-            {/* Tickets Table */}
+            {}
             <div className="card bg-base-100 shadow-xl overflow-hidden">
                 <div className="card-body p-0">
                     <div className="p-6 border-b border-base-200 flex justify-between items-center">

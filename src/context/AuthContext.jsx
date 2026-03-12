@@ -26,14 +26,14 @@ export const AuthProvider = ({ children }) => {
                         setUser(userData);
                         sessionStorage.setItem("user", JSON.stringify(userData));
                     } else if (response.status === 401 || response.status === 404) {
-                        // Only log out if the server explicitly rejects the user
+                        
                         setUser(null);
                         sessionStorage.removeItem("user");
                     }
                 } catch (error) {
                     console.error("Verification failed:", error);
-                    // On network error or server down, we DO NOT clear the session.
-                    // This prevents accidental logouts during refreshes or lag.
+                    
+                    
                 }
             }
             setLoading(false);

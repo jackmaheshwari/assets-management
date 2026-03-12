@@ -36,10 +36,10 @@ export default function Login() {
     return (
         <div className="min-h-screen relative flex items-center justify-center p-4 overflow-hidden bg-cover bg-center font-sans"
             style={{
-                backgroundImage: `url('https://images.unsplash.com/photo-1629814684497-76b3843815c3?q=80&w=2574&auto=format&fit=crop')` // Cloud/Sky background
+                backgroundImage: `url('https://images.unsplash.com/photo-1629814684497-76b3843815c3?q=80&w=2574&auto=format&fit=crop')` 
             }}
         >
-            {/* Logo Top Left */}
+            {}
             <div className="absolute top-8 left-8 flex items-center gap-3 text-slate-800 z-20">
                 <div className="w-10 h-10 bg-black text-white rounded-xl flex items-center justify-center">
                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path><circle cx="12" cy="12" r="4"></circle></svg>
@@ -47,7 +47,7 @@ export default function Login() {
                 <span className="text-xl font-bold tracking-tight text-white">AssetManager</span>
             </div>
 
-            {/* Glass Card */}
+            {}
             <div className="relative w-full max-w-[480px] bg-white/40 backdrop-blur-2xl border border-white/50 rounded-[3rem] shadow-2xl p-8 md:p-12 z-10 transition-all duration-300">
 
                 <div className="flex flex-col items-center text-center mb-8">

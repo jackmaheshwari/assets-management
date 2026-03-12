@@ -9,7 +9,7 @@ const handleResponse = async (response) => {
 };
 
 export const api = {
-    // Generic
+    
     get: async (resource) => {
         const response = await fetch(`${API_URL}/${resource}`);
         return handleResponse(response);

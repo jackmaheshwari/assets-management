@@ -4,14 +4,14 @@ import { createPortal } from "react-dom";
 export function AssetDetailsModal({ isOpen, onClose, asset, assetType }) {
     if (!isOpen || !asset) return null;
 
-    // Helper to format labels
+    
     const formatLabel = (key) => {
         return key
             .replace(/([A-Z])/g, ' $1')
             .replace(/^./, (str) => str.toUpperCase());
     };
 
-    // Fields to exclude from display
+    
     const excludeFields = ['_id', '__v', 'password', 'createdAt'];
 
     const modalContent = (
@@ -20,7 +20,7 @@ export function AssetDetailsModal({ isOpen, onClose, asset, assetType }) {
                 className="bg-base-100 rounded-2xl shadow-2xl w-[90%] max-w-2xl max-h-[90vh] overflow-hidden flex flex-col animate-in zoom-in-95 duration-300"
                 onClick={(e) => e.stopPropagation()}
             >
-                {/* Header */}
+                {}
                 <div className="relative p-6 md:p-8 border-b border-base-200">
                     <button
                         onClick={onClose}
@@ -49,7 +49,7 @@ export function AssetDetailsModal({ isOpen, onClose, asset, assetType }) {
                     </div>
                 </div>
 
-                {/* Content - Scrollable */}
+                {}
                 <div className="flex-1 overflow-y-auto p-6 md:p-8">
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-8">
                         {Object.entries(asset).map(([key, value]) => {
@@ -69,11 +69,11 @@ export function AssetDetailsModal({ isOpen, onClose, asset, assetType }) {
                     </div>
                 </div>
 
-                {/* Footer Gradient overlay to indicate more content */}
+                {}
                 <div className="h-6 bg-gradient-to-t from-base-100 to-transparent pointer-events-none" />
             </div>
             
-            {/* Click backdrop to close */}
+            {}
             <div className="absolute inset-0 -z-10" onClick={onClose} />
         </div>
     );

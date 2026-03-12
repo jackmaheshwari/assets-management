@@ -74,7 +74,7 @@ export default function Hardware() {
             if (editingAsset) {
                 await api.put(endpoints.hardware, editingAsset._id, formData);
             } else {
-                // Generate a simple asset ID if not provided (backend could do this too)
+                
                 const newAsset = { ...formData, assetId: `AST-${Date.now()}` };
                 await api.post(endpoints.hardware, newAsset);
             }

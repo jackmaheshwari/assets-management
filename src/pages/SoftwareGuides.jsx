@@ -121,7 +121,7 @@ export default function SoftwareGuides() {
 
     return (
         <div className="min-h-screen bg-base-200 font-sans flex flex-col">
-            {/* Header */}
+            {}
             <header className="navbar bg-base-100 border-b border-base-300 px-6 md:px-12 sticky top-0 z-50">
                 <div className="flex-1">
                     <Link to="/" className="flex items-center gap-3">
@@ -132,7 +132,7 @@ export default function SoftwareGuides() {
             </header>
 
             <div className="flex-1 flex flex-col md:flex-row max-w-[1440px] mx-auto w-full">
-                {/* Sidebar Navigation */}
+                {}
                 <aside className="w-full md:w-72 bg-base-100 border-r border-base-300 p-6 space-y-2 shrink-0">
                     <h2 className="text-xs font-bold text-base-content/40 uppercase tracking-widest mb-4 px-2">Categories</h2>
                     {CATEGORIES.map((cat) => (
@@ -159,9 +159,9 @@ export default function SoftwareGuides() {
                     </div>
                 </aside>
 
-                {/* Main Content Area */}
+                {}
                 <main className="flex-1 p-6 md:p-10">
-                    {/* Breadcrumbs */}
+                    {}
                     <nav className="flex items-center gap-2 text-xs text-base-content/40 mb-6 font-medium">
                         <Link to="/" className="hover:text-primary">Support Portal</Link>
                         <ChevronLeft className="w-3 h-3 rotate-180" />
@@ -174,7 +174,7 @@ export default function SoftwareGuides() {
                         )}
                     </nav>
 
-                    {/* Page Header */}
+                    {}
                     <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-10">
                         <div>
                             <h1 className="text-3xl font-extrabold text-base-content mb-2">
@@ -196,7 +196,7 @@ export default function SoftwareGuides() {
                         </div>
                     </div>
 
-                    {/* Articles Grid */}
+                    {}
                     <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                         {filteredArticles.map((article) => (
                             <div key={article.id} className="group flex bg-base-100 rounded-2xl border border-base-300 hover:border-primary/40 hover:shadow-xl transition-all overflow-hidden cursor-pointer">
@@ -249,7 +249,7 @@ export default function SoftwareGuides() {
                 </main>
             </div>
 
-            {/* Footer */}
+            {}
             <footer className="bg-base-100 border-t border-base-300 py-10 px-6 mt-auto">
                 <div className="max-w-[1440px] mx-auto flex flex-col md:flex-row justify-between items-center gap-6">
                     <div className="flex items-center gap-3 opacity-60">

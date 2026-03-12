@@ -66,7 +66,7 @@ export default function NonIT() {
             if (editingAsset) {
                 await api.put(endpoints.nonIT, editingAsset._id, formData);
             } else {
-                // Generate a simple asset ID if not provided
+                
                 const newAsset = { ...formData, assetId: `AST-N${Date.now()}` };
                 await api.post(endpoints.nonIT, newAsset);
             }

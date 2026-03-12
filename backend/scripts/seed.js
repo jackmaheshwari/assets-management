@@ -59,14 +59,14 @@ async function seedDatabase() {
         await mongoose.connect(MONGODB_URI);
         console.log('Connected to MongoDB');
 
-        // Clear existing data
+        
         await Employee.deleteMany({});
         await Hardware.deleteMany({});
         await Software.deleteMany({});
         await NonITAsset.deleteMany({});
         await Ticket.deleteMany({});
 
-        // Insert new data
+        
         await Employee.insertMany(employees);
         await Hardware.insertMany(hardware);
         await Software.insertMany(software);

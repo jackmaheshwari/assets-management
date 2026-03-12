@@ -7,7 +7,7 @@ const softwareSchema = new mongoose.Schema({
     packageName: String,
     installDate: Date,
     status: { type: String, default: 'Active' },
-    installedMachine: String // Can be updated to ObjectId ref to Hardware
+    installedMachine: String 
 }, { timestamps: true });
 
 export const Software = mongoose.model('Software', softwareSchema);

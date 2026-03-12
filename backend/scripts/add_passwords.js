@@ -12,8 +12,8 @@ async function migratePasswords() {
         console.log('Connected to MongoDB');
 
         const result = await Employee.updateMany(
-            { password: { $exists: false } }, // Find docs without password
-            { $set: { password: 'password123' } } // Set default password
+            { password: { $exists: false } }, 
+            { $set: { password: 'password123' } } 
         );
 
         console.log(`Updated ${result.modifiedCount} employees with default password.`);

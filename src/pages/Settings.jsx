@@ -9,7 +9,7 @@ export default function Settings() {
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-                {/* Sidebar Navigation (Simple) */}
+                {}
                 <div className="md:col-span-1">
                     <ul className="menu bg-base-100 rounded-box p-2 shadow-sm border border-base-200">
                         <li><a className="active"><User className="w-4 h-4" /> Profile</a></li>
@@ -19,9 +19,9 @@ export default function Settings() {
                     </ul>
                 </div>
 
-                {/* Main Content Area */}
+                {}
                 <div className="md:col-span-2 space-y-6">
-                    {/* Profile Section */}
+                    {}
                     <div className="card bg-base-100 shadow-xl border border-base-200">
                         <div className="card-body">
                             <h3 className="card-title text-lg font-bold mb-4">
@@ -56,7 +56,7 @@ export default function Settings() {
                         </div>
                     </div>
 
-                    {/* Preferences Section */}
+                    {}
                     <div className="card bg-base-100 shadow-xl border border-base-200">
                         <div className="card-body">
                             <h3 className="card-title text-lg font-bold mb-4">
@@ -82,7 +82,7 @@ export default function Settings() {
                         </div>
                     </div>
 
-                    {/* Security Section */}
+                    {}
                     <div className="card bg-base-100 shadow-xl border border-base-200">
                         <div className="card-body">
                             <h3 className="card-title text-lg font-bold mb-4">

@@ -29,7 +29,7 @@ export default function Reports() {
             };
             const result = await api.get(endpointMap[activeTab]);
             setData(result);
-            setSelectedIds([]); // Clear selection when tab changes
+            setSelectedIds([]); 
         } catch (error) {
             console.error("Failed to fetch report data:", error);
         } finally {

@@ -17,9 +17,9 @@ const MONGODB_URI = process.env.MONGODB_URI || 'mongodb://127.0.0.1:27017/assets
 app.use(cors());
 app.use(express.json());
 
-// --- Routes ---
 
-// Stats Route
+
+
 app.get('/api/stats', async (req, res) => {
     try {
         const [hardware, software, nonIT, employees, tickets] = await Promise.all([
@@ -43,7 +43,7 @@ app.get('/api/stats', async (req, res) => {
     }
 });
 
-// Login Route
+
 app.post('/api/login', async (req, res) => {
     try {
         const { email, password } = req.body;
@@ -53,12 +53,12 @@ app.post('/api/login', async (req, res) => {
             return res.status(401).json({ message: "Invalid credentials" });
         }
 
-        // In a real app, use bcrypt to compare hashed passwords
+        
         if (employee.password !== password) {
             return res.status(401).json({ message: "Invalid credentials" });
         }
 
-        // Return user info (excluding password)
+        
         const { password: _, ...userWithoutPassword } = employee.toObject();
         res.json(userWithoutPassword);
     } catch (error) {
@@ -66,7 +66,7 @@ app.post('/api/login', async (req, res) => {
     }
 });
 
-// Verify Route
+
 app.post('/api/verify', async (req, res) => {
     try {
         const { email } = req.body;
@@ -84,9 +84,9 @@ app.post('/api/verify', async (req, res) => {
     }
 });
 
-// Generic CRUD handler
+
 const createCrudRoutes = (router, Model) => {
-    // GET all
+    
     router.get('/', async (req, res) => {
         try {
             const items = await Model.find();
@@ -96,7 +96,7 @@ const createCrudRoutes = (router, Model) => {
         }
     });
 
-    // POST create
+    
     router.post('/', async (req, res) => {
         const item = new Model(req.body);
         try {
@@ -107,7 +107,7 @@ const createCrudRoutes = (router, Model) => {
         }
     });
 
-    // PUT update
+    
     router.put('/:id', async (req, res) => {
         try {
             const updatedItem = await Model.findByIdAndUpdate(req.params.id, req.body, { new: true });
@@ -117,7 +117,7 @@ const createCrudRoutes = (router, Model) => {
         }
     });
 
-    // DELETE
+    
     router.delete('/:id', async (req, res) => {
         try {
             await Model.findByIdAndDelete(req.params.id);
@@ -128,7 +128,7 @@ const createCrudRoutes = (router, Model) => {
     });
 };
 
-// Define Routers
+
 const employeeRouter = express.Router();
 createCrudRoutes(employeeRouter, Employee);
 app.use('/api/employees', employeeRouter);

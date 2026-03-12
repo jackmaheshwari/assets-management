@@ -32,7 +32,7 @@ export default function Landing() {
                 </div>
             </header>
 
-            {/* Hero Section */}
+            {}
             <div className="bg-primary text-primary-content py-16 md:py-24 px-6">
                 <div className="max-w-5xl mx-auto text-center">
                     <h1 className="text-3xl md:text-5xl font-extrabold mb-4">How can we help you today?</h1>
@@ -54,7 +54,7 @@ export default function Landing() {
                 </div>
             </div>
 
-            {/* Quick Action Flex Layout */}
+            {}
             <div className="max-w-6xl mx-auto -mt-12 px-6 pb-12">
                 <div className="flex flex-wrap justify-center gap-6">
                     {quickActions.map((action) => (
@@ -73,10 +73,10 @@ export default function Landing() {
                 </div>
             </div>
 
-            {/* Main Content Area */}
+            {}
             <main className="max-w-6xl mx-auto px-6 pb-20 space-y-12">
                 
-                {/* Software Guides */}
+                {}
                 <section>
                     <div className="flex items-center justify-between mb-6">
                         <h2 className="text-xl font-bold flex items-center gap-2">
@@ -101,7 +101,7 @@ export default function Landing() {
 
             </main>
 
-            {/* Footer */}
+            {}
             <footer className="bg-base-100 border-t border-base-300 py-12 px-6">
                 <div className="max-w-6xl mx-auto flex flex-col md:flex-row justify-between items-center gap-8">
                     <div className="flex items-center gap-3 opacity-60">
