@@ -5,6 +5,7 @@ import { AssetForm } from "../components/AssetForm";
 import { AssetDetailsModal } from "../components/AssetDetailsModal";
 import { StatusDot } from "../components/StatusBadge";
 import { api, endpoints } from "../services/api";
+import { formatDate } from "../utils/date";
 
 export default function Hardware() {
     const [assets, setAssets] = useState([]);
@@ -66,6 +67,7 @@ export default function Hardware() {
         { key: "modelName", label: "Model" },
         { key: "ipAddress", label: "IP Address" },
         { key: "serialNumber", label: "Serial No." },
+        { key: "purchaseDate", label: "Purchase Date", render: (date) => formatDate(date) },
         { key: "assignee", label: "Assignee" },
     ];
 

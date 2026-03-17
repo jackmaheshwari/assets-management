@@ -67,19 +67,17 @@ export default function Team() {
         { key: "status", label: "Status" }
     ];
 
-    const handleAddEmployee = async (formData) => {
+    const handleUpdateEmployee = async (formData) => {
         try {
             if (editingEmployee) {
                 await api.put(endpoints.employees, editingEmployee._id, formData);
-            } else {
-                await api.post(endpoints.employees, formData);
+                fetchEmployees();
+                setIsModalOpen(false);
+                setEditingEmployee(null);
             }
-            fetchEmployees();
-            setIsModalOpen(false);
-            setEditingEmployee(null);
         } catch (error) {
-            console.error("Failed to save employee:", error);
-            alert("Failed to save employee. Please try again.");
+            console.error("Failed to update employee:", error);
+            alert("Failed to update employee. Please try again.");
         }
     };
 
@@ -91,18 +89,6 @@ export default function Team() {
     const handleView = (employee) => {
         setViewingEmployee(employee);
         setIsDetailOpen(true);
-    };
-
-    const handleDelete = async (employee) => {
-        if (confirm(`Are you sure you want to remove ${employee.name} from the team?`)) {
-            try {
-                await api.delete(endpoints.employees, employee._id);
-                fetchEmployees();
-            } catch (error) {
-                console.error("Failed to delete employee:", error);
-                alert("Failed to delete employee.");
-            }
-        }
     };
 
     return (
@@ -118,13 +104,6 @@ export default function Team() {
                         onChange={(e) => setSearchQuery(e.target.value)}
                     />
                 </div>
-                <button
-                    className="flex items-center justify-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors shadow-sm font-medium"
-                    onClick={() => { setEditingEmployee(null); setIsModalOpen(true); }}
-                >
-                    <Plus className="w-5 h-5" />
-                    Add Member
-                </button>
             </div>
 
             {loading ? (
@@ -134,19 +113,20 @@ export default function Team() {
                     columns={columns}
                     data={filteredEmployees}
                     onEdit={handleEdit}
-                    onDelete={handleDelete}
                     onView={handleView}
                 />
             )}
 
-            <EmployeeForm
-                key={editingEmployee ? editingEmployee._id : 'new'}
-                isOpen={isModalOpen}
-                onClose={() => setIsModalOpen(false)}
-                onSubmit={handleAddEmployee}
-                initialData={editingEmployee}
-                title={editingEmployee ? "Edit Member" : "Add Member"}
-            />
+            {editingEmployee && (
+                <EmployeeForm
+                    key={editingEmployee._id}
+                    isOpen={isModalOpen}
+                    onClose={() => { setIsModalOpen(false); setEditingEmployee(null); }}
+                    onSubmit={handleUpdateEmployee}
+                    initialData={editingEmployee}
+                    title="Edit Member Details"
+                />
+            )}
 
             <AssetDetailsModal
                 isOpen={isDetailOpen}

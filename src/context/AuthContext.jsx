@@ -18,7 +18,7 @@ export const AuthProvider = ({ children }) => {
                     const response = await fetch(`${import.meta.env.VITE_API_ORIGIN}/verify`, {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({ email: parsedUser.email }),
+                        body: JSON.stringify({ identifier: parsedUser.email || parsedUser.username }),
                     });
 
                     if (response.ok) {
@@ -42,12 +42,12 @@ export const AuthProvider = ({ children }) => {
         verifyUser();
     }, []);
 
-    const login = async (email, password) => {
+    const login = async (identifier, password) => {
         try {
             const response = await fetch(`${import.meta.env.VITE_API_ORIGIN}/login`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ email, password }),
+                body: JSON.stringify({ identifier, password }),
             });
 
             if (!response.ok) {

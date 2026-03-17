@@ -25,7 +25,7 @@ export default function Login() {
         e.preventDefault();
         setError("");
 
-        const success = await login(email, password);
+        const success = await login(email.trim(), password);
         if (success) {
             navigate(from, { replace: true });
         } else {
@@ -74,9 +74,9 @@ export default function Login() {
                                 <Mail className="h-5 w-5 text-slate-500 group-focus-within:text-slate-800 transition-colors" />
                             </div>
                             <input
-                                type="email"
+                                type="text"
                                 className="w-full pl-11 pr-4 py-4 bg-slate-50/50 border-0 text-slate-900 placeholder-slate-500 rounded-2xl focus:ring-2 focus:ring-slate-900/10 focus:bg-white transition-all outline-none font-medium"
-                                placeholder="Email"
+                                placeholder="Email or Username"
                                 value={email}
                                 onChange={(e) => setEmail(e.target.value)}
                                 required

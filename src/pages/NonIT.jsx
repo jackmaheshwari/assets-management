@@ -4,6 +4,7 @@ import { AssetTable } from "../components/AssetTable";
 import { AssetForm } from "../components/AssetForm";
 import { AssetDetailsModal } from "../components/AssetDetailsModal";
 import { api, endpoints } from "../services/api";
+import { formatDate } from "../utils/date";
 
 export default function NonIT() {
     const [assets, setAssets] = useState([]);
@@ -58,7 +59,7 @@ export default function NonIT() {
             )
         },
         { key: "assignee", label: "Location/Assignee" },
-        { key: "purchaseDate", label: "Purchase Date" },
+        { key: "purchaseDate", label: "Purchase Date", render: (date) => formatDate(date) },
     ];
 
     const handleAddAsset = async (formData) => {

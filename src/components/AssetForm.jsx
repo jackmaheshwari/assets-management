@@ -8,18 +8,44 @@ export function AssetForm({ isOpen, onClose, onSubmit, initialData, title, asset
         status: "Active",
         assignee: "",
         purchaseDate: "",
-        
         manufacturer: "",
         modelName: "",
         modelNumber: "",
         serialNumber: "",
         macAddress: "",
         ipAddress: "",
+        hostName: "",
+        registeredOwner: "",
+        systemType: "",
+        processors: "",
+        biosVersion: "",
+        totalPhysicalMemory: "",
+        networkCards: "",
+        hyperVRequirements: JSON.stringify({
+            vmMonitorModeExtensions: false,
+            virtualizationEnabledInFirmware: false,
+            secondLevelAddressTranslation: false,
+            dataExecutionPreventionAvailable: false
+        }, null, 2)
     });
 
     useEffect(() => {
         if (initialData) {
-            setFormData(initialData);
+            const preparedData = { ...initialData };
+            if (Array.isArray(preparedData.processors)) preparedData.processors = preparedData.processors.join(', ');
+            if (Array.isArray(preparedData.networkCards)) preparedData.networkCards = preparedData.networkCards.join(', ');
+            if (typeof preparedData.hyperVRequirements === 'object') {
+                preparedData.hyperVRequirements = JSON.stringify(preparedData.hyperVRequirements, null, 2);
+            }
+            
+            if (preparedData.purchaseDate) {
+                preparedData.purchaseDate = preparedData.purchaseDate.split('T')[0];
+            }
+            if (preparedData.installDate) {
+                preparedData.installDate = preparedData.installDate.split('T')[0];
+            }
+            
+            setFormData(prev => ({ ...prev, ...preparedData }));
         } else {
             setFormData({
                 name: "",
@@ -32,6 +58,19 @@ export function AssetForm({ isOpen, onClose, onSubmit, initialData, title, asset
                 serialNumber: "",
                 macAddress: "",
                 ipAddress: "",
+                hostName: "",
+                registeredOwner: "",
+                systemType: "",
+                processors: "",
+                biosVersion: "",
+                totalPhysicalMemory: "",
+                networkCards: "",
+                hyperVRequirements: JSON.stringify({
+                    vmMonitorModeExtensions: false,
+                    virtualizationEnabledInFirmware: false,
+                    secondLevelAddressTranslation: false,
+                    dataExecutionPreventionAvailable: false
+                }, null, 2)
             });
         }
     }, [initialData, isOpen]);
@@ -43,7 +82,23 @@ export function AssetForm({ isOpen, onClose, onSubmit, initialData, title, asset
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        onSubmit(formData);
+        const submittedData = { ...formData };
+        
+        if (submittedData.processors && typeof submittedData.processors === 'string') {
+            submittedData.processors = submittedData.processors.split(',').map(s => s.trim());
+        }
+        if (submittedData.networkCards && typeof submittedData.networkCards === 'string') {
+            submittedData.networkCards = submittedData.networkCards.split(',').map(s => s.trim());
+        }
+        try {
+            if (submittedData.hyperVRequirements && typeof submittedData.hyperVRequirements === 'string') {
+                submittedData.hyperVRequirements = JSON.parse(submittedData.hyperVRequirements);
+            }
+        } catch (e) {
+            console.error("Invalid JSON for hyperVRequirements");
+        }
+        
+        onSubmit(submittedData);
         onClose();
     };
 
@@ -293,6 +348,113 @@ export function AssetForm({ isOpen, onClose, onSubmit, initialData, title, asset
                                             placeholder="e.g. 192.168.1.100"
                                         />
                                     </div>
+                                </div>
+
+                                <div className="divider text-[10px] font-bold opacity-30 tracking-[0.2em] uppercase">System Information</div>
+
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                    <div className="form-control">
+                                        <label className="label">
+                                            <span className="label-text font-semibold">Host Name</span>
+                                        </label>
+                                        <input
+                                            type="text"
+                                            name="hostName"
+                                            value={formData.hostName || ""}
+                                            onChange={handleChange}
+                                            className="input input-bordered w-full focus:input-primary"
+                                        />
+                                    </div>
+                                    <div className="form-control">
+                                        <label className="label">
+                                            <span className="label-text font-semibold">Registered Owner</span>
+                                        </label>
+                                        <input
+                                            type="text"
+                                            name="registeredOwner"
+                                            value={formData.registeredOwner || ""}
+                                            onChange={handleChange}
+                                            className="input input-bordered w-full focus:input-primary"
+                                        />
+                                    </div>
+                                </div>
+
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                    <div className="form-control">
+                                        <label className="label">
+                                            <span className="label-text font-semibold">System Type</span>
+                                        </label>
+                                        <input
+                                            type="text"
+                                            name="systemType"
+                                            value={formData.systemType || ""}
+                                            onChange={handleChange}
+                                            className="input input-bordered w-full focus:input-primary"
+                                        />
+                                    </div>
+                                    <div className="form-control">
+                                        <label className="label">
+                                            <span className="label-text font-semibold">BIOS Version</span>
+                                        </label>
+                                        <input
+                                            type="text"
+                                            name="biosVersion"
+                                            value={formData.biosVersion || ""}
+                                            onChange={handleChange}
+                                            className="input input-bordered w-full focus:input-primary"
+                                        />
+                                    </div>
+                                </div>
+
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                    <div className="form-control">
+                                        <label className="label">
+                                            <span className="label-text font-semibold">Total Physical Memory</span>
+                                        </label>
+                                        <input
+                                            type="text"
+                                            name="totalPhysicalMemory"
+                                            value={formData.totalPhysicalMemory || ""}
+                                            onChange={handleChange}
+                                            className="input input-bordered w-full focus:input-primary"
+                                        />
+                                    </div>
+                                    <div className="form-control">
+                                        <label className="label">
+                                            <span className="label-text font-semibold">Processors (Comma separated)</span>
+                                        </label>
+                                        <input
+                                            type="text"
+                                            name="processors"
+                                            value={formData.processors || ""}
+                                            onChange={handleChange}
+                                            className="input input-bordered w-full focus:input-primary"
+                                        />
+                                    </div>
+                                </div>
+
+                                <div className="form-control">
+                                    <label className="label">
+                                        <span className="label-text font-semibold">Network Cards (Comma separated)</span>
+                                    </label>
+                                    <textarea
+                                        name="networkCards"
+                                        value={formData.networkCards || ""}
+                                        onChange={handleChange}
+                                        className="textarea textarea-bordered h-20 focus:textarea-primary"
+                                    />
+                                </div>
+
+                                <div className="form-control">
+                                    <label className="label">
+                                        <span className="label-text font-semibold">Hyper-V Requirements (JSON)</span>
+                                    </label>
+                                    <textarea
+                                        name="hyperVRequirements"
+                                        value={formData.hyperVRequirements || ""}
+                                        onChange={handleChange}
+                                        className="textarea textarea-bordered font-mono text-xs h-32 focus:textarea-primary"
+                                    />
                                 </div>
                             </>
                         )}

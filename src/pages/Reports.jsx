@@ -4,6 +4,7 @@ import clsx from "clsx";
 import { api, endpoints } from "../services/api";
 import { AssetTable } from "../components/AssetTable";
 import { StatusBadge } from "../components/StatusBadge";
+import { formatDate } from "../utils/date";
 
 const tabs = [
     { id: "hardware", label: "Hardware" },
@@ -48,7 +49,7 @@ export default function Reports() {
                 { key: "name", label: "Name" },
                 { key: "status", label: "Status", render: (s) => <StatusBadge status={s} /> },
                 { key: "assignee", label: "Assignee" },
-                { key: "purchaseDate", label: "Purchase Date" }
+                { key: "purchaseDate", label: "Purchase Date", render: (d) => formatDate(d) }
             ];
         }
         if (activeTab === "software") {
@@ -56,7 +57,7 @@ export default function Reports() {
                 { key: "name", label: "Name" },
                 { key: "version", label: "Version" },
                 { key: "publisher", label: "Publisher" },
-                { key: "installDate", label: "Install Date" }
+                { key: "installDate", label: "Install Date", render: (d) => formatDate(d) }
             ];
         }
         if (activeTab === "non-it") {
@@ -64,7 +65,7 @@ export default function Reports() {
                 { key: "assetId", label: "ID" },
                 { key: "name", label: "Name" },
                 { key: "assignee", label: "Location" },
-                { key: "purchaseDate", label: "Purchase Date" }
+                { key: "purchaseDate", label: "Purchase Date", render: (d) => formatDate(d) }
             ];
         }
         if (activeTab === "tickets") {

@@ -7,7 +7,7 @@ export default function Landing() {
     const { user } = useAuth();
 
     const quickActions = [
-        { name: "Report an Incident", icon: PlusCircle, href: "/tickets", desc: "Log a technical issue or bug", color: "text-error" },
+        { name: "Report an Incident", icon: PlusCircle, href: "/report-incident", desc: "Log a technical issue or bug", color: "text-error" },
         { name: "Knowledge Base", icon: BookOpen, href: "/software-guides", desc: "Browse FAQs and help guides", color: "text-info" },
     ];
 

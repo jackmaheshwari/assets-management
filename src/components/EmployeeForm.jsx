@@ -74,36 +74,19 @@ export function EmployeeForm({ isOpen, onClose, onSubmit, initialData, title }) 
                             />
                         </div>
 
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                            <div className="form-control">
-                                <label className="label">
-                                    <span className="label-text font-semibold">Username</span>
-                                </label>
-                                <input
-                                    type="text"
-                                    name="username"
-                                    value={formData.username}
-                                    onChange={handleChange}
-                                    className="input input-bordered w-full focus:input-primary"
-                                    required
-                                    placeholder="e.g. jdoe"
-                                />
-                            </div>
-                            <div className="form-control">
-                                <label className="label">
-                                    <span className="label-text font-semibold">Workload</span>
-                                </label>
-                                <select
-                                    name="workload"
-                                    value={formData.workload}
-                                    onChange={handleChange}
-                                    className="select select-bordered w-full focus:select-primary"
-                                >
-                                    <option value="High">High</option>
-                                    <option value="Medium">Medium</option>
-                                    <option value="Low">Low</option>
-                                </select>
-                            </div>
+                        <div className="form-control">
+                            <label className="label">
+                                <span className="label-text font-semibold">Username</span>
+                            </label>
+                            <input
+                                type="text"
+                                name="username"
+                                value={formData.username}
+                                onChange={handleChange}
+                                className="input input-bordered w-full focus:input-primary"
+                                required
+                                placeholder="e.g. jdoe"
+                            />
                         </div>
 
                         <div className="form-control">
@@ -121,19 +104,36 @@ export function EmployeeForm({ isOpen, onClose, onSubmit, initialData, title }) 
                             />
                         </div>
 
-                        <div className="form-control">
-                            <label className="label">
-                                <span className="label-text font-semibold">Status</span>
-                            </label>
-                            <select
-                                name="status"
-                                value={formData.status}
-                                onChange={handleChange}
-                                className="select select-bordered w-full focus:select-primary"
-                            >
-                                <option value="Active">Active</option>
-                                <option value="Inactive">Inactive</option>
-                            </select>
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div className="form-control">
+                                <label className="label">
+                                    <span className="label-text font-semibold">Workload</span>
+                                </label>
+                                <select
+                                    name="workload"
+                                    value={formData.workload}
+                                    onChange={handleChange}
+                                    className="select select-bordered w-full focus:select-primary"
+                                >
+                                    <option value="High">High</option>
+                                    <option value="Medium">Medium</option>
+                                    <option value="Low">Low</option>
+                                </select>
+                            </div>
+                            <div className="form-control">
+                                <label className="label">
+                                    <span className="label-text font-semibold">Status</span>
+                                </label>
+                                <select
+                                    name="status"
+                                    value={formData.status}
+                                    onChange={handleChange}
+                                    className="select select-bordered w-full focus:select-primary"
+                                >
+                                    <option value="Active">Active</option>
+                                    <option value="Inactive">Inactive</option>
+                                </select>
+                            </div>
                         </div>
 
                         <div className="flex justify-end gap-3 pt-6">

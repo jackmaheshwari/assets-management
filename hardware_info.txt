@@ -1,0 +1,17 @@
+Host Name:                     DESKTOP-BD12H1N
+Registered Owner:              Jayesh
+System Manufacturer:           ASUSTeK COMPUTER INC.
+System Model:                  ASUS TUF Gaming A15 FA506QM_FA566QM
+System Type:                   x64-based PC
+Processor(s):                  1 Processor(s) Installed.
+                               [01]: AMD64 Family 25 Model 80 Stepping 0 AuthenticAMD ~3201 Mhz
+BIOS Version:                  American Megatrends International, LLC. FA506QM.314, 07-01-2023
+Total Physical Memory:         15,773 MB
+Network Card(s):               3 NIC(s) Installed.
+                               [01]: Realtek PCIe GbE Family Controller
+                               [02]: MediaTek Wi-Fi 6 MT7921 Wireless LAN Card
+                               [03]: Bluetooth Device (Personal Area Network)
+Hyper-V Requirements:          VM Monitor Mode Extensions: Yes
+                               Virtualization Enabled In Firmware: Yes
+                               Second Level Address Translation: Yes
+                               Data Execution Prevention Available: Yes

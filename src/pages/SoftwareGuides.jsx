@@ -123,11 +123,14 @@ export default function SoftwareGuides() {
         <div className="min-h-screen bg-base-200 font-sans flex flex-col">
             {}
             <header className="navbar bg-base-100 border-b border-base-300 px-6 md:px-12 sticky top-0 z-50">
-                <div className="flex-1">
-                    <Link to="/" className="flex items-center gap-3">
+                <div className="flex-1 flex items-center gap-4">
+                    <Link to="/" className="btn btn-ghost btn-circle btn-sm bg-base-200 hover:bg-base-300">
+                        <ChevronLeft className="w-5 h-5 text-base-content" />
+                    </Link>
+                    <div className="flex items-center gap-3">
                         <Logo className="w-9 h-9" />
                         <span className="text-xl font-bold tracking-tight text-base-content">Knowledge Base</span>
-                    </Link>
+                    </div>
                 </div>
             </header>
 
@@ -174,7 +177,7 @@ export default function SoftwareGuides() {
                         )}
                     </nav>
 
-                    {}
+                    {/* Page Header */}
                     <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-10">
                         <div>
                             <h1 className="text-3xl font-extrabold text-base-content mb-2">
@@ -184,6 +187,7 @@ export default function SoftwareGuides() {
                                 Browse our comprehensive guides, FAQs, and troubleshooting articles to find the help you need.
                             </p>
                         </div>
+
                         <div className="md:hidden relative">
                             <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-base-content/40" />
                             <input
@@ -255,11 +259,6 @@ export default function SoftwareGuides() {
                     <div className="flex items-center gap-3 opacity-60">
                         <Logo className="w-7 h-7 grayscale" />
                         <span className="text-base font-bold">Support Portal</span>
-                    </div>
-                    <div className="flex gap-8 text-xs text-base-content/40">
-                        <a className="hover:text-primary link link-hover">Terms</a>
-                        <a className="hover:text-primary link link-hover">Privacy</a>
-                        <a className="hover:text-primary link link-hover">Contact</a>
                     </div>
                     <p className="text-[10px] text-base-content/30">© 2026 AssetManager Inc. All rights reserved.</p>
                 </div>

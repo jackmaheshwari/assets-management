@@ -15,7 +15,20 @@ const hardwareSchema = new mongoose.Schema({
         default: 'Available' 
     },
     assignee: String, 
-    purchaseDate: Date
+    purchaseDate: Date,
+    hostName: String,
+    registeredOwner: String,
+    systemType: String,
+    processors: [String],
+    biosVersion: String,
+    totalPhysicalMemory: String,
+    networkCards: [String],
+    hyperVRequirements: {
+        vmMonitorModeExtensions: Boolean,
+        virtualizationEnabledInFirmware: Boolean,
+        secondLevelAddressTranslation: Boolean,
+        dataExecutionPreventionAvailable: Boolean
+    }
 }, { timestamps: true });
 
 export const Hardware = mongoose.model('Hardware', hardwareSchema);

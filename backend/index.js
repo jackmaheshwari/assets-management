@@ -46,8 +46,18 @@ app.get('/api/stats', async (req, res) => {
 
 app.post('/api/login', async (req, res) => {
     try {
-        const { email, password } = req.body;
-        const employee = await Employee.findOne({ email });
+        const { identifier, password } = req.body;
+        
+        if (!identifier || !password) {
+            return res.status(400).json({ message: "Identifier and password are required" });
+        }
+        
+        const employee = await Employee.findOne({ 
+            $or: [
+                { email: identifier },
+                { username: identifier }
+            ]
+        });
 
         if (!employee) {
             return res.status(401).json({ message: "Invalid credentials" });
@@ -69,10 +79,16 @@ app.post('/api/login', async (req, res) => {
 
 app.post('/api/verify', async (req, res) => {
     try {
-        const { email } = req.body;
-        if (!email) return res.status(400).json({ message: "Email is required" });
+        const { identifier } = req.body;
+        if (!identifier) return res.status(400).json({ message: "Identifier (email or username) is required" });
 
-        const employee = await Employee.findOne({ email });
+        const employee = await Employee.findOne({ 
+            $or: [
+                { email: identifier },
+                { username: identifier }
+            ]
+        });
+
         if (!employee) {
             return res.status(401).json({ message: "User not found" });
         }
@@ -146,6 +162,53 @@ createCrudRoutes(nonITRouter, NonITAsset);
 app.use('/api/non-it-assets', nonITRouter);
 
 const ticketRouter = express.Router();
+
+ticketRouter.get('/', async (req, res) => {
+    try {
+        const items = await Ticket.find().populate('assignedTo', 'name email');
+        res.json(items);
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+});
+
+ticketRouter.post('/', async (req, res) => {
+    try {
+        
+        const eligibleStaff = await Employee.find({ status: 'Active' });
+        
+        let assignedTo = null;
+        if (eligibleStaff.length > 0) {
+            const staffWithCounts = await Promise.all(eligibleStaff.map(async (staff) => {
+                const ticketCount = await Ticket.countDocuments({ 
+                    assignedTo: staff._id, 
+                    status: { $in: ['Open', 'In Progress'] } 
+                });
+                
+                const workloadWeights = { 'Low': 0, 'Medium': 1, 'High': 2 };
+                const workloadScore = workloadWeights[staff.workload] || 1;
+                
+                return { 
+                    staff, 
+                    score: (ticketCount * 10) + workloadScore 
+                };
+            }));
+
+            staffWithCounts.sort((a, b) => a.score - b.score);
+            assignedTo = staffWithCounts[0].staff._id;
+        }
+
+        const ticketData = { ...req.body, assignedTo };
+        const item = new Ticket(ticketData);
+        const newItem = await item.save();
+        
+        const populatedItem = await Ticket.findById(newItem._id).populate('assignedTo', 'name email');
+        res.status(201).json(populatedItem);
+    } catch (error) {
+        res.status(400).json({ message: error.message });
+    }
+});
+
 createCrudRoutes(ticketRouter, Ticket);
 app.use('/api/tickets', ticketRouter);
 

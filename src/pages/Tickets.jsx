@@ -5,6 +5,7 @@ import { TicketForm } from "../components/TicketForm";
 import { AssetDetailsModal } from "../components/AssetDetailsModal";
 import { StatusBadge } from "../components/StatusBadge";
 import { api, endpoints } from "../services/api";
+import { formatDate } from "../utils/date";
 
 export default function Tickets() {
     const [tickets, setTickets] = useState([]);
@@ -54,6 +55,18 @@ export default function Tickets() {
         { key: "assetName", label: "Asset" },
         { key: "raisedBy", label: "Raised By" },
         {
+            key: "assignedTo",
+            label: "Assigned To",
+            render: (assignedTo) => (
+                <div className="flex items-center gap-2">
+                    <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center text-[10px] font-bold text-primary">
+                        {assignedTo ? assignedTo.name.split(' ').map(n => n[0]).join('') : '??'}
+                    </div>
+                    <span className="text-sm">{assignedTo ? assignedTo.name : 'Unassigned'}</span>
+                </div>
+            )
+        },
+        {
             key: "priority",
             label: "Priority",
             render: (priority) => (
@@ -74,7 +87,7 @@ export default function Tickets() {
         {
             key: "createdAt",
             label: "Date",
-            render: (date) => new Date(date).toLocaleDateString()
+            render: (date) => formatDate(date)
         }
     ];
 

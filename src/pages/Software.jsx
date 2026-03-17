@@ -4,6 +4,7 @@ import { AssetTable } from "../components/AssetTable";
 import { AssetForm } from "../components/AssetForm";
 import { AssetDetailsModal } from "../components/AssetDetailsModal";
 import { api, endpoints } from "../services/api";
+import { formatDate } from "../utils/date";
 
 export default function Software() {
     const [assets, setAssets] = useState([]);
@@ -50,7 +51,7 @@ export default function Software() {
         { key: "version", label: "Version No." },
         { key: "publisher", label: "Publisher" },
         { key: "packageName", label: "Package Name" },
-        { key: "installDate", label: "Install Date" },
+        { key: "installDate", label: "Install Date", render: (date) => formatDate(date) },
         { key: "installedMachine", label: "Installed On" },
     ];
 

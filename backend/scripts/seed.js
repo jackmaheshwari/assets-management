@@ -24,6 +24,34 @@ const hardware = [
     { assetId: "AST-3", name: "HP LaserJet Pro", status: "In Repair", assignee: "Office 3F", purchaseDate: "2022-11-05", manufacturer: "HP", modelName: "LaserJet Pro", modelNumber: "M404dn", serialNumber: "HP987654321", macAddress: "AA:BB:CC:DD:EE:FF", ipAddress: "192.168.1.50" },
     { assetId: "AST-4", name: "Lenovo ThinkPad X1", status: "Active", assignee: "Jane Smith", purchaseDate: "2023-06-20", manufacturer: "Lenovo", modelName: "ThinkPad X1 Carbon", modelNumber: "Gen 10", serialNumber: "LV555555", macAddress: "11:22:33:44:55:66", ipAddress: "192.168.1.103" },
     { assetId: "AST-5", name: "iPad Pro 12.9", status: "Active", assignee: "Design Team", purchaseDate: "2023-09-01", manufacturer: "Apple", modelName: "iPad Pro", modelNumber: "A2436", serialNumber: "DMPQ1234", macAddress: "A1:B2:C3:D4:E5:F6", ipAddress: "192.168.1.104" },
+    { 
+        assetId: "AST-6", 
+        name: "ASUS TUF Gaming A15", 
+        status: "Active", 
+        assignee: "Jayesh", 
+        purchaseDate: "2024-02-24", 
+        manufacturer: "ASUSTeK COMPUTER INC.", 
+        modelName: "ASUS TUF Gaming A15", 
+        modelNumber: "FA506QM_FA566QM", 
+        serialNumber: "SN-ASUS-123", 
+        hostName: "DESKTOP-BD12H1N",
+        registeredOwner: "Jayesh",
+        systemType: "x64-based PC",
+        processors: ["[01]: AMD64 Family 25 Model 80 Stepping 0 AuthenticAMD ~3201 Mhz"],
+        biosVersion: "American Megatrends International, LLC. FA506QM.314, 07-01-2023",
+        totalPhysicalMemory: "15,773 MB",
+        networkCards: [
+            "Realtek PCIe GbE Family Controller",
+            "MediaTek Wi-Fi 6 MT7921 Wireless LAN Card",
+            "Bluetooth Device (Personal Area Network)"
+        ],
+        hyperVRequirements: {
+            vmMonitorModeExtensions: true,
+            virtualizationEnabledInFirmware: true,
+            secondLevelAddressTranslation: true,
+            dataExecutionPreventionAvailable: true
+        }
+    },
 ];
 
 const software = [
